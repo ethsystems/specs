@@ -21,12 +21,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) to propose a specification.
 
 ## Planned
 
-Promotion candidates from existing PoC specs and engagement work, in rough order:
-
-- Shielded-pool compliance with selective disclosure
-- Portable private authentication / selective disclosure
-- Viewing-key semantics
-- Escape hatches and forced exits
+Further specifications are promoted from PoC and engagement work as they mature. The working queue is internal.
 
 ## Related
 
