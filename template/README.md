@@ -100,3 +100,11 @@ plus known shortcuts an implementer must not copy into production.
 Normative and informative references, separated.
 
 ## 9. Acknowledgments
+
+## Change Process
+
+This document is governed by [1/COSS](../1).
+
+## Copyright
+
+This specification is released to the public domain under [CC0 1.0](../../LICENSE).

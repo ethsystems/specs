@@ -4,7 +4,7 @@ title: Consensus-Oriented Specification System
 status: draft
 category: Best Current Practice
 tags:
-editor: Oskar Thoren <oskarth@titanproxy.com>
+editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
   - Pieter Hintjens <ph@imatix.com>
   - André Rebentisch <andre@openstandards.de>
@@ -200,7 +200,7 @@ This will enable programmatic access to specification metadata.
 | **status**       | status               | string | draft                                   |
 | **category**     | category             | string | Best Current Practice                   |
 | **tags**         | 0 or several tags    | list   | shielded-pool, compliance               |
-| **editor**       | editor name/email    | string | Oskar Thoren <oskarth@titanproxy.com>   |
+| **editor**       | editor name/email    | string | Oskar Thoren <oskar@ethsystems.org>     |
 | **contributors** | contributors         | list   | - Pieter Hintjens <ph@imatix.com>       |
 
 ### Specification Template
