@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Render the specs to static HTML in build/. Requires pandoc.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+OUT=build
+TPL=scripts/spec-template.html
+mkdir -p "$OUT"
+
+pd() { pandoc -f gfm+yaml_metadata_block -t html5 --standalone --template "$TPL" "$@"; }
+
+sed -E \
+  -e 's#\./specs/([0-9]+)#\1.html#g' \
+  -e 's#\./CONTRIBUTING\.md#contributing.html#g' \
+  -e 's#\./template/README\.md#template.html#g' \
+  README.md | pd --metadata title="EthSystems Specifications" -o "$OUT/index.html"
+
+sed -E \
+  -e 's#\./specs/([0-9]+)#\1.html#g' \
+  -e 's#\./template/README\.md#template.html#g' \
+  CONTRIBUTING.md | pd --metadata title="Contributing" -o "$OUT/contributing.html"
+
+pd template/README.md -o "$OUT/template.html"
+
+for d in specs/*/; do
+  n=$(basename "$d")
+  [ -f "$d/README.md" ] || continue
+  sed -E \
+    -e 's#\(\.\./([0-9]+)\)#(\1.html)#g' \
+    -e 's#\.\./\.\./template/README\.md#template.html#g' \
+    "$d/README.md" | pd -o "$OUT/$n.html"
+  for img in "$d"*.png "$d"*.svg; do
+    [ -f "$img" ] && cp "$img" "$OUT/"
+  done
+done
+
+echo "rendered to $OUT/"
