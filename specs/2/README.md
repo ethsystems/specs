@@ -359,15 +359,15 @@ The note-encryption plaintext MUST be fixed-length and canonical, so a ciphertex
 
 ### 6.2 Guarantees
 
-Each guarantee is marked by its current verification level: asserted (designed for and reviewed, not verified), tested (covered by implementation tests), or machine-checked (formally proven). "Asserted" is a design claim, not a verified one: the level tracks the design, and each implementation additionally states which guarantees its own build satisfies. The reference implementation does not yet satisfy the no-double-spend guarantee (Section 7.1).
+Each guarantee is marked by its current verification level: asserted (designed for and reviewed, not verified), tested (covered by implementation tests), or machine-checked (formally proven). "Asserted" is a design claim, not a verified one: the level tracks the design, and each implementation additionally states which guarantees its own build satisfies. "Tested" names the reference implementation's tests (Section 7.1) that exercise the property, including its negative cases.
 
 | Property | Statement | Level |
 |----------|-----------|-------|
 | Confidentiality | Note amounts and owners are hidden in commitments; revealed only via viewing key | asserted |
 | Unlinkability | A transfer breaks the public link between input and output notes, among flows with indistinguishable amount and timing within the attested cohort (see 6.3) | asserted |
 | No double-spend | A note spends at most once: nullifier uniqueness is enforced on-chain, and nullifier derivation is deterministic per note | asserted |
-| Value conservation | No transfer creates or destroys value: input amounts equal output amounts in-circuit | asserted |
-| Compliance gating | Every deposit carries a valid attestation-membership proof; unattested parties cannot deposit | asserted |
+| Value conservation | No transfer creates or destroys value: input amounts equal output amounts in-circuit | tested |
+| Compliance gating | Every deposit carries a valid attestation-membership proof; unattested parties cannot deposit | tested |
 | Selective disclosure | A viewing key grants read access to the notes encrypted to it (incoming and change), without spending authority; see 6.3 for what it does not reveal | asserted |
 
 ### 6.3 Limitations
