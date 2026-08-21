@@ -336,9 +336,10 @@ The public-input order above is normative: a verifier consumes the inputs positi
 | Hash | Poseidon over BN254, distinct permutation per arity (Section 2) | Commitments, nullifiers, Merkle trees |
 | Note encryption | ECDH + HKDF + AEAD (ChaCha20-Poly1305) over a fixed-length canonical plaintext | Encrypted note delivery to viewing keys |
 | Merkle trees | LeanIMT (append-only, dynamic depth); commitment tree max depth 32, attestation tree max depth 20 | Membership proofs |
+| Payload commitment | `keccak256(payload) mod p`, with `p` the BN254 scalar-field modulus, so the value is a canonical field element | Binding the encrypted payload to the proof (Section 4.6) |
 | Proving system | UltraHonk (reference; any EVM-verifiable zk-SNARK with equivalent soundness MAY be substituted) | All proof statements |
 
-Two conforming implementations MUST produce identical commitments, nullifiers, and tree roots for identical inputs; the hash and tree instantiations above are therefore normative for interoperability, while the proving system is a deployment choice.
+Two conforming implementations MUST produce identical commitments, nullifiers, tree roots, and payload commitments for identical inputs; the hash and tree instantiations above are therefore normative for interoperability, while the proving system is a deployment choice. The payload commitment is computed over the exact bytes submitted on-chain; the reduction modulo `p` loses under two bits of the digest, which does not weaken the binding.
 
 The note-encryption plaintext MUST be fixed-length and canonical, so a ciphertext's length reveals nothing about the note amount, and the note's commitment MUST be bound as associated data. The delivery payload MUST NOT carry a persistent linkable identifier such as the recipient's viewing public key: an anonymizing transport does not remove an application-layer identifier that ties a recipient to a specific on-chain commitment. The exact encoding is pinned in Section 7.4.
 
