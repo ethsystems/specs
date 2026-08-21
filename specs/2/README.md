@@ -157,18 +157,22 @@ sequenceDiagram
     participant P as ShieldedPool
     T->>T: generate note, compute commitment
     T->>T: prove key ownership + commitment well-formed + key attested
-    T->>R: deposit request (proof, encrypted note)
-    R->>P: submit
-    P->>P: verify proof vs known attestation root
-    P->>P: pull tokens, insert commitment
+    alt direct
+        T->>P: submit from funding address (proof, encrypted note)
+    else relayed
+        T->>R: deposit request + funding-address authorisation
+        R->>P: submit
+    end
+    P->>P: verify proof vs known attestation root, check funding-address authorisation
+    P->>P: insert commitment, pull tokens
     P-->>T: Deposit event (encrypted note)
 ```
 
 1. [transactor] Generate a note (token, amount, own spending public key, fresh random salt) and compute its commitment.
 2. [transactor] Generate a proof for the deposit statement (Section 5.3): the depositor owns the spending key (`owner_pubkey == Poseidon1(spending_key)`), the commitment is well-formed over the deposited token and amount, and that key is attested.
-3. [transactor] Approve the ERC-20 transfer and send the deposit request (directly or via a relayer).
-4. [relayer] Submit the transaction.
-5. [contract] Verify the proof against a known attestation root; on failure, revert.
+3. [transactor] Approve the ERC-20 transfer and submit the deposit from the funding address, or sign a deposit authorisation and send it to a relayer.
+4. [relayer] Submit the transaction, if a relayer is used.
+5. [contract] Verify the proof against a known attestation root and check that the funding address authorised the deposit (Section 5.3); on failure, revert.
 6. [contract] Append the commitment to the commitment tree, emit a deposit event carrying the encrypted note, and transfer tokens from the funding address into the pool. Insertion and event precede the external call, per Section 4.6.
 
 ### 4.4 Private Transfer
@@ -299,7 +303,9 @@ Every amount witness in every statement MUST be range-checked to the note amount
 3. `attestation_leaf == Poseidon4(owner_pubkey, attester, issued_at, expires_at)`
 4. The attestation leaf is a member of the tree at the public attestation root.
 
-Constraint 1 restricts deposits to keys the depositor controls. Without it, the deposit witness is publicly reconstructible from registry events, and any party can generate an entry proof for any attested key. Binding the funding address stops a third party from spending an outstanding ERC-20 approval: the contract MUST pull tokens only from the funding address bound in the proof. The reference implementation does not yet implement constraint 1 or the funding-address binding (Section 7.1).
+Constraint 1 restricts deposits to keys the depositor controls. Without it, the deposit witness is publicly reconstructible from registry events, and any party can generate an entry proof for any attested key.
+
+The funding address is a public input bound to the proof but not constrained in-circuit. The contract MUST pull tokens only from the funding address bound in the proof, and MUST require that the funding address authorised this deposit: either `msg.sender == funding_address`, or a signature by the funding address over the deposit's public inputs, the chain id, and the pool address. An outstanding ERC-20 allowance alone is not authorisation: the proof shows only that the prover holds an attested key, and the funding address is a free public input, so any attested party could otherwise deposit against another address's allowance and mint a note it owns at that address's expense. The reference implementation uses the `msg.sender` form; relayed deposits require the signature form.
 
 `expires_at` is bound into the leaf but not compared against current time in-circuit; enforcement of expiry is registry-side in this core (see Section 6.3 and the compliance-monitoring extension, which constrains it in-circuit).
 
