@@ -1,7 +1,7 @@
 ---
 shortname: 2/SHIELDED-POOL
 title: Attestation-Gated Shielded Pool
-status: raw
+status: draft
 category: Standards Track
 tags: shielded-pool, private-payments, compliance, selective-disclosure
 editor: Oskar Thoren <oskar@ethsystems.org>
@@ -387,7 +387,7 @@ Each guarantee is marked by its current verification level: asserted (designed f
 
 ### 7.1 Reference Implementation
 
-The reference implementation lives in [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/` (Noir circuits, Solidity contracts, Rust client). Its SPEC.md is the source this specification was promoted from. As of pocs `fix/shielded-pool-conformance`, the implementation satisfies the contract rules of Section 4.6 and the proof statements of Section 5.3, with tests for each negative case (reentrancy, payload binding, funding address, wrong spending key, proof length above depth, amount above 2^128, sum overflow) and an end-to-end run on a local chain with the real verifiers. Known reference-implementation shortcuts an implementer MUST NOT copy into production: a single compliance authority, in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorisation signature, Section 5.3).
+The reference implementation lives in [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/` (Noir circuits, Solidity contracts, Rust client). Its SPEC.md is the source this specification was promoted from. As of pocs `fix/shielded-pool-conformance`, the implementation satisfies the contract rules of Section 4.6 and the proof statements of Section 5.3, with tests for each negative case (reentrancy, payload binding, funding address, wrong spending key, proof length above depth, amount above 2^128, sum overflow) and an end-to-end run on a local chain with the real verifiers. Draft status (1/COSS) rests on this implementation and on the adversarial review of the specification and of the implementation against it; the review found and closed the five conformance gaps above and the funding-address authorisation hole (Section 5.3). Known reference-implementation shortcuts an implementer MUST NOT copy into production: a single compliance authority, in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorisation signature, Section 5.3).
 
 ### 7.2 Composition: Compliance Monitoring
 
@@ -399,7 +399,7 @@ Epoch-based nullifiers, per-note chain proofs, and PIR-served state reads are sp
 
 ### 7.4 Interop Surface Not Yet Specified
 
-The following are unspecified at raw status. A single-implementation deployment pins each by reference to the reference implementation; independent implementations require them. They do not by themselves gate draft status: the draft gate is a reference implementation conforming to the normative requirements of Sections 4.6 and 5.3, plus the adversarial review (1/COSS).
+The following remain unspecified at draft status. A single-implementation deployment pins each by reference to the reference implementation; independent implementations require them, so they gate stable status (1/COSS), not draft.
 
 - Note encryption: curve and point encodings, ephemeral-key scheme, HKDF inputs and info string, and nonce rule. The fixed-length canonical plaintext, the commitment-as-associated-data binding, and the exclusion of persistent linkable identifiers are already normative (Section 5.4); what remains here is pinning the concrete encoding.
 - Event ABI and the note-discovery procedure. The recompute-to-commitment check before a note counts as received is already normative (Section 4.4); what remains here is the event schema and the discovery walk.
