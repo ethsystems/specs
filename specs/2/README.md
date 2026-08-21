@@ -387,7 +387,7 @@ Each guarantee is marked by its current verification level: asserted (designed f
 
 ### 7.1 Reference Implementation
 
-The reference implementation lives in [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/` (Noir circuits, Solidity contracts, Rust client). Its SPEC.md is the source this specification was promoted from. Known reference-implementation shortcuts an implementer MUST NOT copy into production: a single compliance authority, in-memory client-side Merkle trees, no deployed relayer network, u64 amounts in the circuits (the note declares u128), a deposit circuit that binds neither the spending key nor the funding address (Section 5.3), and no payload-commitment binding (Section 4.6).
+The reference implementation lives in [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/` (Noir circuits, Solidity contracts, Rust client). Its SPEC.md is the source this specification was promoted from. As of pocs `fix/shielded-pool-conformance`, the implementation satisfies the contract rules of Section 4.6 and the proof statements of Section 5.3, with tests for each negative case (reentrancy, payload binding, funding address, wrong spending key, proof length above depth, amount above 2^128, sum overflow) and an end-to-end run on a local chain with the real verifiers. Known reference-implementation shortcuts an implementer MUST NOT copy into production: a single compliance authority, in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorisation signature, Section 5.3).
 
 ### 7.2 Composition: Compliance Monitoring
 
