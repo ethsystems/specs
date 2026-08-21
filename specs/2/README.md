@@ -292,7 +292,7 @@ attestation_leaf = Poseidon4(subject_pubkey, attester, issued_at, expires_at)
 
 In every circuit, `spending_key` MUST be a single witness variable feeding nullifier derivation, owner-key derivation, and attestation membership alike. Independent per-use equality constraints in this position are a historically shipped soundness bug.
 
-Merkle proofs carry an explicit length and MUST range-check it against the tree's maximum depth. Proofs opened independently (the two transfer inputs) MUST NOT share one length.
+Merkle proofs carry an explicit length and MUST range-check it against the tree's maximum depth (`proof_length <= MAX_DEPTH`); the check is required even when the underlying library clamps or ignores out-of-range lengths. Proofs opened independently (the two transfer inputs) MUST NOT share one length.
 
 Every amount witness in every statement MUST be range-checked to the note amount width (u128), and amount sums MUST use non-wrapping arithmetic. Conservation over unchecked field elements permits minting by modular overflow. The contract MUST reject any public amount at or above 2^128.
 
