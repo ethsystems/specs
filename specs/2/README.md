@@ -231,7 +231,7 @@ sequenceDiagram
 - Deposit proofs MUST be verified against the current attestation root only (the fresh-gate rule). The historical-root window applies to the commitment tree, not the attestation tree: accepting a stale attestation root would re-admit revoked parties. Issuance and revocation change the current root and invalidate in-flight deposit proofs; clients retry against the new root.
 - The contract MUST reject insertion of a commitment already present in the tree. Nullifiers are position-independent, so two identical commitments would share one nullifier and the second note would be unspendable.
 - Deposits MUST require the token to be in the supported set; removing a token MUST NOT block transfers or withdrawals of existing notes. Tokens whose received amount can differ from the transfer argument (fee-on-transfer, rebasing) MUST NOT be supported: the pool accounts notes at face value, and a shortfall leaves the pool insolvent for the last withdrawer.
-- Each operation's encrypted payload MUST be bound to its proof: the statement carries a payload commitment as a public input (unconstrained in-circuit, like the withdraw recipient), and the contract MUST check it against the hash of the submitted payload. Without the binding, a relayer can garble the payload: the operation lands, but the recipient never learns the note contents and the funds are unspendable.
+- Each operation's encrypted payload MUST be bound to its proof: the statement carries a payload commitment as the last public input (unconstrained in-circuit, like the withdraw recipient), and the contract MUST compute it from the submitted payload (Section 5.4) and pass that value to the verifier. Without the binding, a relayer can garble the payload: the operation lands, but the recipient never learns the note contents and the funds are unspendable.
 - Deposits and withdrawals MUST reject `amount == 0`; zero-value operations are tree-growth griefing.
 - The contract MUST reject any field-typed public input at or above the proof system's field modulus. Verifiers consume public inputs modulo the field, while the nullifier set is keyed by the raw encoding; without this check a prover submits `nullifier + p`, presenting the same field element to the verifier and an unseen key to the nullifier set, and double-spends.
 - Commitment insertion MUST be reachable only from constrained mint sites: every insertion is asserted equal to a hash image over proof-constrained parts. Accepting an output commitment as a free witness breaks every property built on the tree.
@@ -296,7 +296,7 @@ Merkle proofs carry an explicit length and MUST range-check it against the tree'
 
 Every amount witness in every statement MUST be range-checked to the note amount width (u128), and amount sums MUST use non-wrapping arithmetic. Conservation over unchecked field elements permits minting by modular overflow. The contract MUST reject any public amount at or above 2^128.
 
-**Deposit statement.** Public: commitment, token, amount, funding address, attestation root. The proof attests:
+**Deposit statement.** Public, in this order: commitment, token, amount, funding address, attestation root, payload commitment. The proof attests:
 
 1. `owner_pubkey == Poseidon1(spending_key)`
 2. `commitment == Poseidon4(token, amount, owner_pubkey, salt)`
@@ -309,7 +309,7 @@ The funding address is a public input bound to the proof but not constrained in-
 
 `expires_at` is bound into the leaf but not compared against current time in-circuit; enforcement of expiry is registry-side in this core (see Section 6.3 and the compliance-monitoring extension, which constrains it in-circuit).
 
-**Transfer statement.** Public: two nullifiers, two output commitments, commitment root. The proof attests, with `owner_pubkey == Poseidon1(spending_key)`:
+**Transfer statement.** Public, in this order: two nullifiers, two output commitments, commitment root, payload commitment. The proof attests, with `owner_pubkey == Poseidon1(spending_key)`:
 
 1. Each input commitment is well-formed over its note fields and `owner_pubkey`, and is a member of the tree at the public commitment root.
 2. Each public nullifier equals `Poseidon2(commitment_in, spending_key)`.
@@ -319,13 +319,15 @@ The funding address is a public input bound to the proof but not constrained in-
 
 For a ballast input (the padded zero-value note), the circuit MUST still constrain the commitment's shape and the nullifier's derivation under the sender's own spending key, and MUST skip only the Merkle inclusion check. Leaving a ballast nullifier unconstrained lets a prover mark arbitrary values spent. Whether an input is ballast MUST be derived in-circuit from `amount == 0`; a free selector witness would let a prover skip membership for a nonzero note. A ballast input carries the sender's own key, the transaction's token, and a fresh random salt.
 
-**Withdraw statement.** Public: nullifier, token, amount, recipient, commitment root. The proof attests:
+**Withdraw statement.** Public, in this order: nullifier, token, amount, recipient, commitment root. The proof attests:
 
 1. `owner_pubkey == Poseidon1(spending_key)`
 2. `commitment == Poseidon4(token, amount, owner_pubkey, salt)` and the commitment is a member of the tree at the public commitment root.
 3. `nullifier == Poseidon2(commitment, spending_key)`
 
-`recipient` is a public input bound to the proof but not constrained in-circuit; the contract reads it to route funds.
+`recipient` is a public input bound to the proof but not constrained in-circuit; the contract reads it to route funds. Withdraw carries no encrypted payload and therefore no payload commitment.
+
+The public-input order above is normative: a verifier consumes the inputs positionally, and two implementations that disagree on the order cannot verify each other's proofs.
 
 ### 5.4 Cryptographic Profile
 
