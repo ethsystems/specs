@@ -6,7 +6,7 @@ category: Standards Track
 tags: shielded-pool, private-payments, compliance, selective-disclosure
 editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
-  - Aaryamann Challani
+  - Aaryamann Challani <ac@ethsystems.org>
 ---
 
 This document specifies an attestation-gated shielded pool for confidential ERC-20 payments on Ethereum. Only participants holding an eligibility attestation can enter the pool. Inside the pool, funds exist as private notes, committed on-chain and spent via nullifiers, hiding transfer amounts and counterparties from public observers, while viewing keys enable selective disclosure to auditors and regulators. The result is confidential payments between attested institutions, with entry cryptographically gated.
@@ -53,7 +53,7 @@ Which point fits follows the trust context, along the i2i and i2u distinction th
 
 ### 1.5 Out of Scope
 
-- Network-layer metadata: IP addresses, submission timing, and gas-payer identity are out of scope for the shielding layer. Deployments SHOULD compose network-level anonymity to cover them. Application-payload metadata is not covered by this carve-out: an anonymizing transport cannot remove a linkable identifier that the delivery payload itself carries (Section 5.4).
+- Network-layer metadata: IP addresses, submission timing, and gas-payer identity are out of scope for the shielding layer. Deployments SHOULD compose network-level anonymity to cover them. Application-payload metadata is not covered: an anonymizing transport cannot remove a linkable identifier that the delivery payload itself carries (Section 5.4).
 - State-read metadata: fetching a note's Merkle path or scanning for incoming notes through shared RPC or indexer infrastructure reveals to that operator which note is about to be spent or read. Out of scope here; addressed by the nullifier-scaling extension (private information retrieval, PIR), or sidestepped by institutions running their own node and indexer.
 - Assets other than ERC-20: the mechanics generalize to any transferable asset, but this specification scopes to ERC-20.
 - Multi-asset atomic settlement (PvP/DvP): transfers are single-token by construction (Section 5.3). Atomic two-asset settlement is a planned extension, not part of this core.
@@ -411,15 +411,11 @@ Normative:
 
 Informative:
 
-- Zcash Protocol Specification (Sapling, Orchard): <https://zips.z.cash/protocol/protocol.pdf>
+- [Zcash Protocol Specification (Sapling, Orchard)](https://zips.z.cash/protocol/protocol.pdf)
 - [Railgun](https://docs.railgun.org/), [Privacy Pools](https://eprint.iacr.org/2023/1156), [Zeto](https://github.com/hyperledger-labs/zeto), [ERC-3643](https://eips.ethereum.org/EIPS/eip-3643)
 - [Noir](https://noir-lang.org/docs/), [zk-kit.noir](https://github.com/privacy-scaling-explorations/zk-kit.noir)
 - EthSystems Map: [shielding pattern](https://github.com/ethsystems/map/blob/master/patterns/pattern-shielding.md), [private-stablecoins use case](https://github.com/ethsystems/map/blob/master/use-cases/private-stablecoins.md), [private-payments approach](https://github.com/ethsystems/map/blob/master/approaches/approach-private-payments.md)
 - Reference implementation: [ethsystems/pocs](https://github.com/ethsystems/pocs), `pocs/private-payment/shielded-pool/`
-
-## 9. Acknowledgments
-
-The protocol design and reference implementation are by Aaryamann Challani. The hardening requirements in Sections 4.6 and 5.3 were surfaced during the compliance-monitoring extension work.
 
 ## Appendix A. Regulatory Context (non-normative)
 
