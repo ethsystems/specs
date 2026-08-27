@@ -29,7 +29,7 @@ Consumer-focused privacy protocols do not meet these requirements: they admit an
 ### 1.3 Relationship to Existing Standards
 
 - Zcash Sapling/Orchard define both the note-commitment-nullifier shielded pool model and the dual-key separation of spending and viewing authority that this protocol builds on, but target a native asset on a dedicated chain with no participation gating.
-- Tornado Cash and Railgun bring shielded pools to Ethereum, maximizing anonymity with no compliance gating; Privacy Pools adds after-the-fact association proofs. None gates entry on verified identity.
+- Tornado Cash, Railgun, and Privacy Pools bring shielded pools to Ethereum. Railgun's Private Proofs of Innocence screen funds after entry: a user proves non-membership in a blocklist, and relayers check the proof off-chain. Privacy Pools generalizes this to association sets: a user proves membership in any published set, inclusion or exclusion, and the proof is verified on-chain at withdrawal. Both screen funds; this specification screens participants: entry requires an identity attestation, checked in-circuit.
 - Zeto (Hyperledger) is the closest prior design: its transfer templates check sender and receivers against an identities root in-circuit. This specification differs in its explicit attestation registry semantics (expiry, revocation, authorized attesters), its dual-key selective-disclosure model, and its published extension points for compliance monitoring and nullifier scaling.
 - ERC-3643 defines permissioned-token compliance semantics for transparent tokens; this protocol provides the analogous boundary inside a shielded pool.
 
@@ -412,7 +412,7 @@ Normative:
 Informative:
 
 - [Zcash Protocol Specification (Sapling, Orchard)](https://zips.z.cash/protocol/protocol.pdf)
-- [Railgun](https://docs.railgun.org/), [Privacy Pools](https://eprint.iacr.org/2023/1156), [Zeto](https://github.com/hyperledger-labs/zeto), [ERC-3643](https://eips.ethereum.org/EIPS/eip-3643)
+- [Railgun](https://docs.railgun.org/), [Railgun Private Proofs of Innocence](https://docs.railgun.org/wiki/assurance/private-proofs-of-innocence), [Privacy Pools](https://eprint.iacr.org/2023/1156), [Zeto](https://github.com/hyperledger-labs/zeto), [ERC-3643](https://eips.ethereum.org/EIPS/eip-3643)
 - [Noir](https://noir-lang.org/docs/), [zk-kit.noir](https://github.com/privacy-scaling-explorations/zk-kit.noir)
 - EthSystems Map: [shielding pattern](https://github.com/ethsystems/map/blob/master/patterns/pattern-shielding.md), [private-stablecoins use case](https://github.com/ethsystems/map/blob/master/use-cases/private-stablecoins.md), [private-payments approach](https://github.com/ethsystems/map/blob/master/approaches/approach-private-payments.md)
 - Reference implementation: [ethsystems/pocs](https://github.com/ethsystems/pocs), `pocs/private-payment/shielded-pool/`
