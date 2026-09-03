@@ -235,7 +235,7 @@ sequenceDiagram
 - Deposits and withdrawals MUST reject `amount == 0`; zero-value operations are tree-growth griefing.
 - The contract MUST reject any field-typed public input at or above the proof system's field modulus. Verifiers consume public inputs modulo the field, while the nullifier set is keyed by the raw encoding; without this check a prover submits `nullifier + p`, presenting the same field element to the verifier and an unseen key to the nullifier set, and double-spends.
 - Commitment insertion MUST be reachable only from constrained mint sites: every insertion is asserted equal to a hash image over proof-constrained parts. Accepting an output commitment as a free witness breaks every property built on the tree.
-- Every commitment insertion and the event announcing it MUST complete before any external call (such as the token transfer) in the same operation. Under a token with transfer hooks, a reentrant call can otherwise interleave insertions ahead of the outer call's event, permanently diverging log-order replay from the tree.
+- Every commitment insertion and the event announcing it MUST complete before any external call (such as the token transfer) in the same operation. Under a token with transfer hooks, a reentrant call can otherwise interleave insertions ahead of the outer call's event, permanently diverging log-order replay from the tree. Withdrawals insert nothing, so the order of the token transfer and the withdraw event is unconstrained.
 - All entry points MUST be non-reentrant.
 - Events MUST carry enough data (commitments, nullifiers, encrypted notes) for a client to reconstruct the commitment tree and spent set from logs alone.
 
@@ -294,7 +294,7 @@ In every circuit, `spending_key` MUST be a single witness variable feeding nulli
 
 Merkle proofs carry an explicit length and MUST range-check it against the tree's maximum depth (`proof_length <= MAX_DEPTH`); the check is required even when the underlying library clamps or ignores out-of-range lengths. Proofs opened independently (the two transfer inputs) MUST NOT share one length.
 
-Every amount witness in every statement MUST be range-checked to the note amount width (u128), and amount sums MUST use non-wrapping arithmetic. Conservation over unchecked field elements permits minting by modular overflow. The contract MUST reject any public amount at or above 2^128.
+Every amount witness in every statement MUST be range-checked to the note amount width (u128), and amount sums MUST use non-wrapping arithmetic. Conservation over unchecked field elements permits minting by modular overflow. The contract MUST reject any public amount at or above 2^128. Public amounts that enter the circuit as field elements (deposit, withdraw) MUST be range-checked in-circuit as well; the contract check is not a substitute, because the verifier consumes the value modulo the field.
 
 **Deposit statement.** Public, in this order: commitment, token, amount, funding address, attestation root, payload commitment. The proof attests:
 
@@ -365,7 +365,7 @@ Each guarantee is marked by its current verification level: asserted (designed f
 |----------|-----------|-------|
 | Confidentiality | Note amounts and owners are hidden in commitments; revealed only via viewing key | asserted |
 | Unlinkability | A transfer breaks the public link between input and output notes, among flows with indistinguishable amount and timing within the attested cohort (see 6.3) | asserted |
-| No double-spend | A note spends at most once: nullifier uniqueness is enforced on-chain, and nullifier derivation is deterministic per note | asserted |
+| No double-spend | A note spends at most once: nullifier uniqueness is enforced on-chain, and nullifier derivation is deterministic per note | tested |
 | Value conservation | No transfer creates or destroys value: input amounts equal output amounts in-circuit | tested |
 | Compliance gating | Every deposit carries a valid attestation-membership proof; unattested parties cannot deposit | tested |
 | Selective disclosure | A viewing key grants read access to the notes encrypted to it (incoming and change), without spending authority; see 6.3 for what it does not reveal | asserted |
