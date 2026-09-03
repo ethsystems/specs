@@ -115,6 +115,7 @@ A raw specification MUST be complete against the domain's specification template
 
 When raw specifications can be demonstrated, they become **draft** specifications.
 In this domain, demonstration means that a reference implementation exists and that the specification has passed an adversarial review.
+An adversarial review examines both the specification text and the reference implementation against it, attempts to break the stated guarantees, and is recorded with its findings; the specification and implementation MUST address every finding before the status changes.
 Changes to draft specifications should be done in consultation with users.
 Draft specifications are contracts between the editors and implementers.
 
