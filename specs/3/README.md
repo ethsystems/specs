@@ -171,7 +171,7 @@ The profile of 2/SHIELDED-POOL Section 5.4 applies, plus the registry parameters
 
 | Primitive | Instantiation | Usage |
 |-----------|---------------|-------|
-| Attestation tree | LeanIMT (append-only, dynamic depth), max depth 20 | Attestation membership proofs |
+| Attestation tree | LeanIMT (dynamic depth), max depth 20; a revoked leaf is updated to the field-zero value (Section 4.2), so this tree is not append-only | Attestation membership proofs |
 | Attestation leaf | Poseidon4 over BN254 | Binding subject, attester, and validity window |
 
 The Merkle proof-length range check of 2/SHIELDED-POOL Section 5.3 is per-tree: an attestation proof range-checks against depth 20, a commitment proof against depth 32. Two conforming implementations of this profile MUST produce identical attestation leaves and attestation roots for identical inputs.
@@ -202,7 +202,7 @@ The guarantees of 2/SHIELDED-POOL Section 6.2 hold under this profile, with one 
 
 The limitations of 2/SHIELDED-POOL Section 6.3 apply, except where an item below replaces one. This profile adds:
 
-- The gate applies at entry only. Transfer outputs and withdrawals carry no attestation check, so an attested party can pay an unattested key that then withdraws. Expiry is not enforced in-circuit and the registry has no automatic sweep, so an expired-but-unrevoked attestation still admits deposits. Revocation prevents new deposits only; in-pool funds of a revoked party stay spendable. De-authorizing an attester does not invalidate leaves it already issued; recovery is per-leaf. Closed membership, in-circuit expiry, in-pool monitoring, and attester-scoped revocation all require the compliance-monitoring extension (Section 7.2).
+- The gate applies at entry only. Transfer outputs and withdrawals carry no attestation check, so an attested party can pay an unattested key that then withdraws. Expiry is not enforced in-circuit and the registry has no automatic sweep, so an expired-but-unrevoked attestation still admits deposits. Revocation prevents new deposits only; in-pool funds of a revoked party stay spendable. De-authorizing an attester does not invalidate leaves it already issued; recovery is per-leaf. Closed membership, in-circuit expiry, and in-pool monitoring all require the compliance-monitoring extension (Section 7.2).
 - A single compliance authority is a single point of trust; production deployments SHOULD require multi-party attester governance.
 - The anonymity set is the attested cohort, publicly enumerable from registry events, so small cohorts give weak anonymity regardless of pool traffic. The registry also exposes which attester vouches for which key, renewal cadence, and revocation timing. This replaces the anonymity-set claim of 2/SHIELDED-POOL Section 6.3, which describes an open pool; the root-freshness advice in that section still applies.
 - Attestation leaves carry no chain or deployment separation, on the same terms as commitments and nullifiers in 2/SHIELDED-POOL Section 6.3.
@@ -219,7 +219,7 @@ The in-pool monitoring layer (per-transaction policy evaluation, per-epoch aggre
 
 ### 7.3 Interop Surface Not Yet Specified
 
-The interop surface of 2/SHIELDED-POOL Section 7.4 applies. This profile adds one item, on the same terms: the attestation registry function surface, revocation access control (which attester may revoke which leaf), the value that replaces a removed leaf, and test vectors for the attestation leaf and root.
+The interop surface of 2/SHIELDED-POOL Section 7.4 applies. This profile adds one item, on the same terms: the attestation registry function surface, the revocation function signature and the governance path for broader revocation (the attester-scope rule of Section 4.2 is normative), and test vectors for the attestation leaf and root.
 
 ## 8. References
 
