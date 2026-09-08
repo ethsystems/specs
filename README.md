@@ -18,7 +18,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) to propose a specification.
 | No | Spec | Title | Status | Editor |
 |----|------|-------|--------|--------|
 | 1 | [1/COSS](./specs/1) | Consensus-Oriented Specification System | draft | Oskar Thoren |
-| 2 | [2/SHIELDED-POOL](./specs/2) | Attestation-Gated Shielded Pool | draft | Oskar Thoren |
+| 2 | [2/SHIELDED-POOL](./specs/2) | Shielded Pool | draft | Oskar Thoren |
+| 3 | [3/ATTESTED-POOL](./specs/3) | Attested Shielded Pool | draft | Oskar Thoren |
 
 ## Planned
 
