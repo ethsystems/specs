@@ -7,7 +7,7 @@ The process is [1/COSS](./specs/1). The short version:
 - Lifecycle: raw → draft → stable → deprecated → retired.
   - **raw**: complete against the [template](./template/README.md), merged after editor review.
     No contractual weight; rough is fine. Anyone can open one.
-  - **draft**: a reference implementation exists and the specification has passed an adversarial review.
+  - **draft**: a reference implementation exists and the specification has passed an [adversarial review](#adversarial-review).
   - **stable**: an independent third-party implementation or a production deployment exists.
 - Standards Track specifications MUST use the [template](./template/README.md).
 - Use RFC 2119 keywords for normative statements.
@@ -25,3 +25,11 @@ If a protocol idea is worth discussing, it is worth a raw spec.
 
 New to the team?
 Drafting or reviewing a specification in your first weeks is the expected onboarding path.
+
+## Adversarial review
+
+The review is the gate between raw and draft.
+
+A reviewer reads the specification and the implementation against it, and tries to break the stated guarantees.
+Record the findings in the pull request that promotes the specification.
+The editor closes each finding before the status changes.
