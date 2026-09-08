@@ -3,7 +3,7 @@ shortname: 2/SHIELDED-POOL
 title: Shielded Pool
 status: draft
 category: Standards Track
-tags: shielded-pool, private-payments, selective-disclosure
+tags: [shielded-pool, private-payments, selective-disclosure]
 editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
   - Aaryamann Challani <ac@ethsystems.org>

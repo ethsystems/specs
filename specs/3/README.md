@@ -3,7 +3,7 @@ shortname: 3/ATTESTED-POOL
 title: Attested Shielded Pool
 status: draft
 category: Standards Track
-tags: shielded-pool, compliance, attestation
+tags: [shielded-pool, compliance, attestation]
 editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
   - Aaryamann Challani <ac@ethsystems.org>

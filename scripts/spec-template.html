@@ -85,7 +85,7 @@ $if(shortname)$
 <div class="meta"><dl>
 <dt>status</dt><dd><span class="pill pill-$status$">$status$</span></dd>
 $if(category)$<dt>category</dt><dd>$category$</dd>$endif$
-$if(tags)$<dt>tags</dt><dd>$tags$</dd>$endif$
+$if(tags)$<dt>tags</dt><dd>$for(tags)$$tags$$sep$, $endfor$</dd>$endif$
 $if(editor)$<dt>editor</dt><dd>$editor$</dd>$endif$
 $if(contributors)$<dt>contributors</dt><dd>$for(contributors)$$contributors$$sep$, $endfor$</dd>$endif$
 </dl></div>
