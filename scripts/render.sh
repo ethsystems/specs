@@ -5,6 +5,8 @@ cd "$(dirname "$0")/.."
 OUT=build
 TPL=scripts/spec-template.html
 mkdir -p "$OUT"
+cp assets/logo-horizontal-black-on-cream.svg "$OUT/"
+cp LICENSE "$OUT/"
 
 pd() { pandoc -f gfm+yaml_metadata_block -t html5 --standalone --template "$TPL" "$@"; }
 
@@ -19,7 +21,10 @@ sed -E \
   -e 's#\./template/README\.md#template.html#g' \
   CONTRIBUTING.md | pd --metadata title="Contributing" -o "$OUT/contributing.html"
 
-pd template/README.md -o "$OUT/template.html"
+sed -E \
+  -e 's#\.\./([0-9]+)#\1.html#g' \
+  -e 's#\.\./\.\./LICENSE#LICENSE#g' \
+  template/README.md | pd --metadata title="Specification template" -o "$OUT/template.html"
 
 for d in specs/*/; do
   n=$(basename "$d")
@@ -27,6 +32,7 @@ for d in specs/*/; do
   sed -E \
     -e 's#\(\.\./([0-9]+)\)#(\1.html)#g' \
     -e 's#\.\./\.\./template/README\.md#template.html#g' \
+    -e 's#\.\./\.\./LICENSE#LICENSE#g' \
     "$d/README.md" | pd -o "$OUT/$n.html"
   for img in "$d"*.png "$d"*.svg; do
     [ -f "$img" ] && cp "$img" "$OUT/"
