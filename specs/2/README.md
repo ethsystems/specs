@@ -143,7 +143,7 @@ The registry's subject argument is `owner_pubkey` itself. An implementation MUST
 
 An attester MUST be able to revoke only leaves carrying its own `attester` field; broader revocation MUST be governance-gated. Without this bound, any authorized attester can revoke every leaf, and under the fresh-gate rule (Section 4.6) one rogue or key-compromised attester halts all deposits pool-wide. A removed leaf MUST be replaced by the field-zero value, which has no Poseidon4 preimage a prover can open.
 
-After revocation the participant cannot produce inclusion proofs against the updated root, preventing new deposits. Notes already in the pool remain spendable; this protocol does not freeze in-pool funds. Deployments that require post-entry controls compose the compliance-monitoring extension (Section 7.3).
+After revocation the participant cannot produce inclusion proofs against the updated root, preventing new deposits. Notes already in the pool remain spendable; this protocol does not freeze in-pool funds. Deployments that require post-entry controls compose the compliance-monitoring extension (Section 7.2).
 
 Revocation makes the attestation tree non-monotone: each revocation invalidates in-flight proofs built against older roots, and the fresh-gate rule (Section 4.6) is what makes revocation effective. The compliance-monitoring extension replaces removal with short-lived attestations and re-issuance to keep the tree append-only; a deployment of this core MAY adopt the same discipline.
 
