@@ -39,7 +39,8 @@ This Specification is distributed in the hope that it will be useful, but WITHOU
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-A copy of the GNU General Public License is included in [COPYING](./COPYING).
+You should have received a copy of the GNU General Public License along with this program;
+if not, see http://www.gnu.org/licenses.
 
 ## Change Process
 
@@ -154,7 +155,7 @@ A specification MAY also have additional contributors who contribute changes to 
 It is RECOMMENDED to use a process similar to [C4 process](https://github.com/unprotocols/rfc/blob/master/1/README.md)
 to maximize the scale and diversity of contributions.
 
-Protocol specifications in this domain MUST use [CC0 1.0](../../LICENSE).
+All other documents in this domain MUST use [CC0 1.0](../../LICENSE).
 Contributions MUST use the license of the document being changed.
 Following this editorial process does not change the license of a specification.
 
