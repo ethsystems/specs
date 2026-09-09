@@ -12,7 +12,8 @@ The process is [1/COSS](./specs/1). The short version:
 - Standards Track specifications MUST use the [template](./template/README.md).
 - Use RFC 2119 keywords for normative statements.
   Semantic line breaks are recommended.
-- License: CC0. (1/COSS itself is GPL-3.0 by lineage.)
+- Protocol specifications use [CC0 1.0](./LICENSE).
+  Contributions use the license of the document being changed.
 
 ## Proposing a specification
 

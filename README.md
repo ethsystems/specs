@@ -33,4 +33,5 @@ Further specifications are promoted from PoC and engagement work as they mature.
 
 ## License
 
-[CC0 1.0](./LICENSE), except [1/COSS](./specs/1) which is GPL-3.0 by lineage.
+Protocol specifications are released under [CC0 1.0](./LICENSE).
+Each document states its license.

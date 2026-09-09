@@ -25,6 +25,8 @@ It is equivalent except for some areas:
 - lifecycle transitions are tied to explicit artifacts (see "COSS Lifecycle");
 - miscellaneous metadata, editor, and format/link updates.
 
+This EthSystems adaptation was revised on 2026-09-09.
+
 ## License
 
 Copyright (c) 2008-26 the Editor and Contributors.
@@ -37,8 +39,7 @@ This Specification is distributed in the hope that it will be useful, but WITHOU
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program;
-if not, see http://www.gnu.org/licenses.
+A copy of the GNU General Public License is included in [COPYING](./COPYING).
 
 ## Change Process
 
@@ -153,9 +154,9 @@ A specification MAY also have additional contributors who contribute changes to 
 It is RECOMMENDED to use a process similar to [C4 process](https://github.com/unprotocols/rfc/blob/master/1/README.md)
 to maximize the scale and diversity of contributions.
 
-Unlike the original C4 process however, it is RECOMMENDED to use CC0 as a more permissive license alternative.
-We SHOULD NOT use GPL or GPL-like license.
-One exception is this specification, as this was the original license for this specification.
+Protocol specifications in this domain MUST use [CC0 1.0](../../LICENSE).
+Contributions MUST use the license of the document being changed.
+Following this editorial process does not change the license of a specification.
 
 The editor is responsible for accurately maintaining the state of specifications and for handling all comments on the specification.
 
@@ -172,8 +173,8 @@ The ability to branch a specification is necessary in these circumstances:
 
 The responsible editor of a branched specification is the person who makes the branch.
 
-Branches, including added contributions, are derived works and thus licensed under the same terms as the original specification.
-This means that contributors are guaranteed the right to merge changes made in branches back into their original specifications.
+Rights and obligations for external branches follow the license of the specification.
+CC0 does not require external contributors to publish their changes or offer them back to this repository.
 
 Technically speaking, a branch is a *different* specification, even if it carries the same name.
 Branches have no special status except that accorded by the community.
