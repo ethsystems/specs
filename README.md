@@ -1,16 +1,8 @@
 # EthSystems Specifications
 
-Specifications for confidential systems for institutions on Ethereum:
-protocols we design, battle-test in [proof of concepts](https://github.com/ethsystems/pocs), and maintain as editors.
-Each specification makes the trust model, threat model, and compliance boundary explicit,
-so engineers, auditors, and regulators can each read it.
-ERCs and other ecosystem standards are outputs of this process, not the working format.
-
-The process is [1/COSS](./specs/1):
-one responsible editor per specification,
-lifecycle raw → draft → stable, with each transition tied to artifacts.
-A draft requires a reference implementation and an adversarial review.
-Stable requires independent third-party use.
+Specifications for confidential systems on Ethereum, written for institutional requirements.
+Each one makes its trust model, threat model, and compliance boundary explicit.
+We design, test, and maintain them under [1/COSS](./specs/1).
 See [CONTRIBUTING.md](./CONTRIBUTING.md) to propose a specification.
 
 ## Specifications
