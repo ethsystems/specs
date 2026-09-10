@@ -215,7 +215,11 @@ The reference implementation of 2/SHIELDED-POOL Section 7.1 is a deployment of t
 
 ### 7.2 Composition: Compliance Monitoring
 
-The in-pool monitoring layer (per-transaction policy evaluation, per-epoch aggregation via compliance notes and velocity nullifiers, threshold-encrypted audit channel, in-circuit attestation expiry) is specified as an extension over this profile; its current draft is `pocs/private-payment/shielded-pool-compliance/SPEC.md`, planned for promotion as a spec in this domain.
+In-pool monitoring is intended as a separate specification building on this entry profile, not an additional requirement of it.
+Its current draft is `pocs/private-payment/shielded-pool-compliance/SPEC.md`, planned for promotion as a spec in this domain.
+That draft covers policy evaluation on gated operations, per-epoch aggregation, a threshold-encrypted audit channel, and in-circuit attestation expiry.
+Promotion requires reconciling its proof statements, state changes, and registry rules with both this profile and 2/SHIELDED-POOL Section 5.5.
+This pointer does not establish conformance of the current PoC draft to either specification.
 
 ### 7.3 Interop Surface Not Yet Specified
 

@@ -46,7 +46,7 @@ A shielded pool has three reference points:
 |---|---|---|
 | None (sovereign) | Nothing: anyone deposits, transfers, and withdraws | This specification |
 | Entry (attested) | Only attested keys may deposit; in-pool transfer and withdrawal stay open | [3/ATTESTED-POOL](../3) |
-| Flow (monitored) | Entry control, plus in-pool policy and an audit channel | The compliance-monitoring extension (Section 7.2) |
+| Flow (monitored) | Entry control, plus in-pool policy and an audit channel | Separate monitoring specification, pending promotion (Section 7.2) |
 
 The three points share one pool core, and this document is that core. The note, commitment, nullifier, and conservation machinery of Sections 4 and 5 is identical across them. They differ only in the membership and disclosure checks above that core, which attach at the extension points of Section 5.5.
 
@@ -109,7 +109,8 @@ The protocol composes three mechanisms:
 
 Entry is open: anyone may deposit, transfer, and withdraw. Control attaches at the named extension points of Section 5.5 rather than by forking this document. An entry predicate is a conjunct of the deposit statement, a flow predicate a conjunct of the transfer statement, and either may read an on-chain registry. A membership check in the deposit statement is architecturally separable from everything under it, which is where this document and its profiles divide.
 
-Three companion specifications compose with this core, each specified separately: [3/ATTESTED-POOL](../3), which gates entry on an eligibility attestation; a compliance-monitoring layer that evaluates policy in-circuit on every transaction (in-pool flow monitoring, aggregation, audit channels); and a nullifier-scaling layer (epoch nullifiers, private state reads). See Section 7.
+[3/ATTESTED-POOL](../3) composes an eligibility gate with this core.
+Separate PoC drafts describe compliance monitoring and nullifier scaling; neither is promoted into this specification (Section 7).
 
 ### 3.4 Protocol Phases
 
@@ -358,7 +359,9 @@ The reference implementation lives in [ethsystems/pocs](https://github.com/ethsy
 
 ### 7.2 Composition: Compliance Monitoring
 
-The in-pool monitoring layer (per-transaction policy evaluation, per-epoch aggregation via compliance notes and velocity nullifiers, threshold-encrypted audit channel, in-circuit attestation expiry) is specified as an extension over this core and over [3/ATTESTED-POOL](../3); its current draft is `pocs/private-payment/shielded-pool-compliance/SPEC.md`, planned for promotion as a spec in this domain.
+Flow monitoring belongs in a separate specification; this section is an informative pointer and adds no monitoring requirements to the core.
+The current draft is `pocs/private-payment/shielded-pool-compliance/SPEC.md`; [3/ATTESTED-POOL](../3) Section 7.2 describes its intended composition.
+Promotion is a separate change and requires reconciling that draft with the extension points and conformance rules of Section 5.5.
 
 ### 7.3 Composition: Nullifier Scaling and Private State Reads
 
