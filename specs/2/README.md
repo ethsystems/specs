@@ -32,7 +32,9 @@ This document specifies the pool machinery those flows need, and nothing above i
 - Tornado Cash, Railgun, and Privacy Pools bring shielded pools to Ethereum. Railgun's Private Proofs of Innocence screen funds after entry: a user proves non-membership in a blocklist, and relayers check the proof off-chain. Privacy Pools generalizes this to association sets: a user proves membership in any published set, inclusion or exclusion, and the proof is verified on-chain at withdrawal. Each fixes one screening placement in its own design. This document fixes none, and names the points at which a profile attaches a check at entry or on in-pool flow.
 - Deployed shielded pools share five invariants and diverge on nearly everything below them. Appendix A records that comparison against primary sources, and classifies each system by where it places its screening check.
 
-No open specification writes the shielded-pool core on Ethereum as a control-neutral document with named extension points, so a deployment that needs entry or flow control forks a pool rather than composes a profile. That is the gap this document fills. Protocol-relevant parts may later be upstreamed as an ERC; this document is the working specification.
+No open specification writes the shielded-pool core on Ethereum as a control-neutral document with named extension points.
+This document enables composition of profiles based on compliance / business requirements.
+Protocol-relevant parts may later be upstreamed as an ERC; this document is the working specification.
 
 ### 1.4 Control Profile
 
