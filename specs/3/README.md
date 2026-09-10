@@ -29,7 +29,7 @@ The constraints of 2/SHIELDED-POOL Section 1.2 apply, as does the control-profil
 ### 1.3 Relationship to Existing Standards
 
 - Zeto (Hyperledger) is the closest prior design: its transfer templates check sender and receivers against an identities root in-circuit. This profile differs in gating entry rather than every transfer, and in its explicit attestation registry semantics: expiry, revocation, and authorized attesters.
-- ERC-3643 defines permissioned-token compliance semantics for transparent tokens; this profile provides the analogous boundary inside a shielded pool.
+- ERC-3643 defines permissioned-token compliance semantics for transparent tokens; this profile provides the analogous boundary around a shielded pool.
 - Railgun's Private Proofs of Innocence and Privacy Pools' association sets screen funds, after entry and at exit respectively. This profile screens participants, at entry. 2/SHIELDED-POOL Appendix A places these systems on that axis.
 
 No open specification combines attestation-registry semantics (expiry, revocation, authorized attesters) with dual-key selective disclosure for a shielded pool on Ethereum L1. That is the gap this document fills. Protocol-relevant parts may later be upstreamed as an ERC; this document is the working specification.
