@@ -4,7 +4,7 @@ title: Full Specification Name
 status: raw
 category: Standards Track
 tags:
-editor: Name <email>
+editor: Name <name@example.com>
 contributors:
 ---
 
