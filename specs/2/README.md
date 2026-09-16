@@ -184,10 +184,10 @@ sequenceDiagram
     alt direct
         T->>P: submit from funding address (proof, encrypted note)
     else relayed
-        T->>R: deposit request + funding-address authorisation
+        T->>R: deposit request + funding-address authorization
         R->>P: submit
     end
-    P->>P: verify proof, check funding-address authorisation
+    P->>P: verify proof, check funding-address authorization
     P->>P: insert commitment, pull tokens
     P-->>T: Deposit event (encrypted note)
 ```
@@ -195,9 +195,9 @@ sequenceDiagram
 1. [transactor] Generate a note (token, amount, an owner spending public key, fresh random salt) and compute its commitment.
    The owner key MAY be the depositor's own or a recipient's (Section 5.3).
 2. [transactor] Generate a proof for the deposit statement (Section 5.3): the commitment is well-formed over the deposited token and amount.
-3. [transactor] Approve the ERC-20 transfer and submit the deposit from the funding address, or sign a deposit authorisation and send it to a relayer.
+3. [transactor] Approve the ERC-20 transfer and submit the deposit from the funding address, or sign a deposit authorization and send it to a relayer.
 4. [relayer] Submit the transaction, if a relayer is used.
-5. [contract] Verify the proof and check that the funding address authorised the deposit (Section 5.3); on failure, revert.
+5. [contract] Verify the proof and check that the funding address authorized the deposit (Section 5.3); on failure, revert.
 6. [contract] Append the commitment to the commitment tree, emit a deposit event carrying the note encrypted to the owner key's viewing key, and transfer tokens from the funding address into the pool.
    Insertion and event precede the external call, per Section 4.4.
    Where the owner key is a recipient's, that recipient MUST apply the check of Section 4.2 step 3 before treating the note as received.
@@ -339,8 +339,8 @@ This is legitimate in this core: the deposit's token and amount are public, the 
 A profile that conditions entry on a property of the owner key constrains it at E1 (Section 5.5).
 
 The funding address is a public input bound to the proof but not constrained in-circuit.
-The contract MUST pull tokens only from the funding address bound in the proof, and MUST require that the funding address authorised this deposit: either `msg.sender == funding_address`, or a signature by the funding address over the deposit's public inputs, the chain id, and the pool address.
-An outstanding ERC-20 allowance alone is not authorisation: the funding address is a free public input, so any party could otherwise deposit against another address's allowance and mint a note it owns at that address's expense.
+The contract MUST pull tokens only from the funding address bound in the proof, and MUST require that the funding address authorized this deposit: either `msg.sender == funding_address`, or a signature by the funding address over the deposit's public inputs, the chain id, and the pool address.
+An outstanding ERC-20 allowance alone is not authorization: the funding address is a free public input, so any party could otherwise deposit against another address's allowance and mint a note it owns at that address's expense.
 The reference implementation uses the `msg.sender` form; relayed deposits require the signature form.
 
 **Transfer statement.**
@@ -382,11 +382,11 @@ The public-input order above is normative: a verifier consumes the inputs positi
 | Proving system | UltraHonk (reference; any EVM-verifiable zk-SNARK with equivalent soundness MAY be substituted) | All proof statements |
 
 Two conforming implementations MUST produce identical commitments, nullifiers, tree roots, and payload commitments for identical inputs; the hash and tree instantiations above are therefore normative for interoperability, while the proving system is a deployment choice.
-The payload commitment is computed over the exact bytes submitted on-chain; the reduction modulo `p` loses under two bits of the digest, which does not weaken the binding.
+The payload commitment is computed over the exact bytes submitted on-chain; the reduction modulo `p` loses over two bits of the digest, which does not weaken the binding.
 
 The note-encryption plaintext MUST be fixed-length and canonical, so a ciphertext's length reveals nothing about the note amount, and the note's commitment MUST be bound as associated data.
 The delivery payload MUST NOT carry a persistent linkable identifier such as the recipient's viewing public key: an anonymizing transport does not remove an application-layer identifier that ties a recipient to a specific on-chain commitment.
-The exact encoding is pinned in Section 7.4.
+The exact encoding remains unspecified (Section 7.4).
 
 ### 5.5 Extension Points
 
@@ -471,10 +471,10 @@ The reference implementation lives in [ethsystems/pocs](https://github.com/ethsy
 Its SPEC.md is the source this specification was promoted from.
 It implements the attestation-gated pool: it conforms to [3/ATTESTED-POOL](../3), and to this document through it, so its circuits and contracts enforce every rule of this document plus the profile's conjunct.
 As of pocs `fix/shielded-pool-conformance`, the implementation satisfies the contract rules of Section 4.4 and the proof statements of Section 5.3, with tests for each negative case (reentrancy, payload binding, funding address, wrong spending key, proof length above depth, amount above 2^128, sum overflow) and an end-to-end run on a local chain with the real verifiers.
-Draft status (1/COSS) rests on this implementation and on the adversarial review of the gated specification this document was split from, and of the implementation against it; the review found and closed five conformance gaps and the funding-address authorisation hole (Section 5.3).
+Draft status (1/COSS) rests on this implementation and on the adversarial review of the gated specification this document was split from, and of the implementation against it; the review found and closed five conformance gaps and the funding-address authorization hole (Section 5.3).
 No ungated deployment is published, and the reference implementation does not exercise the ungated deposit statement of Section 5.3: its deposit circuit carries the 3/ATTESTED-POOL conjunct, so the shield-to-recipient path is unimplemented and was not separately reviewed.
-An implementation of this core alone runs the machinery vectors of Section 5.5 and claims core-only conformance.
-Known reference-implementation shortcuts an implementer MUST NOT copy into production: in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorisation signature, Section 5.3).
+An implementation of this core alone claims core-only conformance by satisfying every requirement of this document (Section 5.5). The machinery test vectors remain unpublished (Section 7.4).
+Known reference-implementation shortcuts an implementer MUST NOT copy into production: in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorization signature, Section 5.3).
 
 ### 7.2 Composition: Compliance Monitoring
 

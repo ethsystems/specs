@@ -144,7 +144,7 @@ sequenceDiagram
 
 1. [transactor] At step 2 of that flow, the proof additionally attests that the depositor owns the spending key and that the key is attested (Section 5.3).
    The note's owner key is therefore the depositor's own; shielding straight to another party's key is not available under this profile.
-2. [contract] At step 5, verify the proof against the current attestation root (Section 4.4) as well as the funding-address authorisation.
+2. [contract] At step 5, verify the proof against the current attestation root (Section 4.4) as well as the funding-address authorization.
 
 ### 4.4 Contract-Side Requirements
 
