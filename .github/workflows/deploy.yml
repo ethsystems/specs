@@ -1,0 +1,69 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request' || github.repository == 'ethsystems/specs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+
+      - name: Build public artifact
+        id: site
+        run: |
+          set -euo pipefail
+          source_dir="$(mktemp -d "$RUNNER_TEMP/specs-source.XXXXXX")"
+          site_dir="$(mktemp -d "$RUNNER_TEMP/specs-site.XXXXXX")"
+          # Render a fresh source tree so stale pages cannot enter the artifact.
+          git archive HEAD | tar -x -C "$source_dir"
+          bash "$source_dir/scripts/render.sh"
+          # Only these files may cross the publication boundary.
+          files=(1.html 2.html 3.html LICENSE contributing.html index.html lifecycle.png template.html)
+          for file in "${files[@]}"; do
+            test -f "$source_dir/build/$file"
+            test ! -L "$source_dir/build/$file"
+            cp "$source_dir/build/$file" "$site_dir/$file"
+          done
+          diff -u <(printf '%s\n' "${files[@]}" | LC_ALL=C sort) \
+            <(find "$site_dir" -mindepth 1 -exec basename {} \; | LC_ALL=C sort)
+          echo "path=$site_dir" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request' && github.repository == 'ethsystems/specs'
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request' && github.repository == 'ethsystems/specs'
+        with:
+          path: ${{ steps.site.outputs.path }}
+
+  deploy:
+    # PR runs only validate the build; publication is restricted to the public repo.
+    if: github.event_name != 'pull_request' && github.repository == 'ethsystems/specs'
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

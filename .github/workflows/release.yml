@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'Commit or ref to release (default: newest commit older than 7 days). Use "origin/main" to release everything.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: >-
+      github.repository == 'ethsystems/specs-private'
+      && vars.SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Load release key
+        env:
+          DEPLOY_KEY: ${{ secrets.PUBLIC_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          curl -sS https://api.github.com/meta \
+            | jq -r '.ssh_keys[] | "github.com " + .' >> ~/.ssh/known_hosts
+
+      - name: Verify the key authenticates
+        run: |
+          set -euo pipefail
+          # ssh -T against GitHub always exits non-zero; the banner is the signal.
+          out="$(ssh -o StrictHostKeyChecking=yes -T git@github.com 2>&1 || true)"
+          echo "$out"
+          case "$out" in
+            *successfully\ authenticated*) : ;;
+            *) echo "Key did not authenticate. Check the PUBLIC_DEPLOY_KEY secret."; exit 1 ;;
+          esac
+
+      # Pass the input through env so it cannot inject shell commands.
+      - name: Push release
+        env:
+          REQUESTED_SHA: ${{ inputs.sha }}
+        run: |
+          set -euo pipefail
+          sha="${REQUESTED_SHA:-$(git rev-list -1 --before='7 days ago' origin/main)}"
+          if [ -z "$sha" ]; then
+            echo "Nothing on main is old enough to release yet."
+            exit 0
+          fi
+          sha="$(git rev-parse --verify "${sha}^{commit}")"
+          if ! git merge-base --is-ancestor "$sha" origin/main; then
+            echo "Refusing: $sha is not an ancestor of main."
+            exit 1
+          fi
+          if git ls-remote --exit-code --heads https://github.com/ethsystems/specs.git refs/heads/main; then
+            git fetch --no-tags --quiet https://github.com/ethsystems/specs.git main
+            if git merge-base --is-ancestor "$sha" FETCH_HEAD; then
+              echo "Already released: $sha is contained in the target. Nothing to do."
+              exit 0
+            fi
+          else
+            result=$?
+            if [ "$result" -ne 2 ]; then
+              echo "Cannot inspect public main. Refusing to release."
+              exit "$result"
+            fi
+            echo "Public main does not exist yet. This is the first release."
+          fi
+          git log -1 --format='releasing %H  committed %cI  %s' "$sha"
+          git push git@github.com:ethsystems/specs.git "$sha:refs/heads/main"
