@@ -20,6 +20,17 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) to propose a specification.
 | 2 | [2/SHIELDED-POOL](./specs/2) | Shielded Pool | draft | Oskar Thoren |
 | 3 | [3/ATTESTED-POOL](./specs/3) | Attested Shielded Pool | draft | Oskar Thoren |
 
+## Build
+
+The site is rendered from these Markdown files with [pandoc](https://pandoc.org) 3.x.
+
+```bash
+bash scripts/render.sh                                 # writes build/
+python3 -m http.server 8765 --bind 127.0.0.1 -d build  # open http://127.0.0.1:8765
+```
+
+`build/` is git-ignored. Do not commit rendered output.
+
 ## Planned
 
 Further specifications are promoted from PoC and engagement work as they mature. The working queue is internal.
