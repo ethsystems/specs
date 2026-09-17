@@ -39,7 +39,7 @@ jobs:
           git archive HEAD | tar -x -C "$source_dir"
           bash "$source_dir/scripts/render.sh"
           # Only these files may cross the publication boundary.
-          files=(1.html 2.html 3.html LICENSE contributing.html index.html lifecycle.png template.html)
+          files=(1.html 2.html 3.html COPYING LICENSE contributing.html index.html lifecycle.png template.html)
           for file in "${files[@]}"; do
             test -f "$source_dir/build/$file"
             test ! -L "$source_dir/build/$file"

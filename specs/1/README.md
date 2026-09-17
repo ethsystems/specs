@@ -40,8 +40,9 @@ This Specification is distributed in the hope that it will be useful, but WITHOU
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program;
+You should have received a [copy](./COPYING) of the GNU General Public License along with this program;
 if not, see http://www.gnu.org/licenses.
+The GPL applies to this document only; every other document in this domain is [CC0 1.0](../../LICENSE).
 
 ## Change Process
 
@@ -118,6 +119,7 @@ A raw specification MUST be complete against the domain's specification template
 
 When raw specifications can be demonstrated, they become **draft** specifications.
 In this domain, demonstration means that a reference implementation exists and that the specification has passed an adversarial review.
+This applies to Standards Track specifications; an Informational or Best Current Practice specification becomes draft when the domain adopts it in practice.
 Changes to draft specifications should be done in consultation with users.
 Draft specifications are contracts between the editors and implementers.
 

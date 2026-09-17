@@ -6,6 +6,7 @@ OUT=build
 TPL=scripts/spec-template.html
 mkdir -p "$OUT"
 cp LICENSE "$OUT/"
+cp specs/1/COPYING "$OUT/"
 
 pd() { pandoc -f gfm+yaml_metadata_block -t html5 --standalone --template "$TPL" "$@"; }
 

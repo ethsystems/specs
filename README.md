@@ -7,7 +7,7 @@ so engineers, auditors, and regulators can read the same document.
 ERCs and other ecosystem standards are outputs of this process, not the working format.
 
 The process is [1/COSS](./specs/1): one responsible editor per specification, and a lifecycle of raw → draft → stable.
-A draft needs a reference implementation and an adversarial review.
+A Standards Track draft needs a reference implementation and an adversarial review.
 Stable needs independent third-party use.
 Source is [ethsystems/specs](https://github.com/ethsystems/specs).
 See [CONTRIBUTING.md](./CONTRIBUTING.md) to propose a specification.
