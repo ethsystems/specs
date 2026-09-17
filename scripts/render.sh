@@ -15,7 +15,7 @@ sed -E \
   -e 's#\./CONTRIBUTING\.md#contributing.html#g' \
   -e 's#\./template/README\.md#template.html#g' \
   README.md | awk '
-    /^## (Build|Planned|Related|License)[[:space:]]*$/ { skipping = 1; next }
+    /^## (Build|Release|Planned|Related|License)[[:space:]]*$/ { skipping = 1; next }
     /^## / && skipping { skipping = 0 }
     !skipping { print }
   ' | pd --metadata title="EthSystems Specifications" -o "$OUT/index.html"
