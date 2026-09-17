@@ -17,7 +17,8 @@ The process is [1/COSS](./specs/1). The short version:
 
 ## Proposing a specification
 
-1. Copy `template/README.md` to `specs/<next number>/README.md`.
+1. Copy `template/README.md` to `specs/raw/<shortname>/README.md`.
+   Numbers are assigned at promotion to draft, not here.
 2. Fill in the metadata header. Set `status: raw`. Name an editor (usually yourself).
 3. Open a pull request. The assigned editor reviews and merges.
 

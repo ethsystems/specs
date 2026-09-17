@@ -81,13 +81,16 @@ Primarily, COSS uses a git repository model for editing and publishing specifica
 
 * The *domain* is the conservancy for a set of specifications in a certain area.
 * Each domain is implemented as a git repository on a public forge.
-* Each specification is a directory `specs/<number>/` containing a `README.md`,
+* Each numbered specification is a directory `specs/<number>/` containing a `README.md`,
   together with diagrams, test vectors, proofs, and other resources.
+  A raw specification lives in `specs/raw/<shortname>/` until it is promoted.
 
 The copyright, patent, and trademark policies of the domain must be clarified in an Intellectual Property policy that applies to the domain.
 
-Specifications are assigned an incremental number when they are first merged.
-Thus, we refer to a specification by specifying its domain, number, and short name.
+A specification is assigned the next incremental number when it is promoted to draft.
+Raw specifications carry no number, so a discarded experiment never consumes one.
+Thus, we refer to a promoted specification by specifying its domain, number, and short name;
+a raw specification is referenced as `<domain>/raw/<shortname>`.
 New versions of the same specification will have new numbers.
 The syntax for a specification reference is:
 
@@ -96,7 +99,7 @@ The syntax for a specification reference is:
 For example, this specification is **ethsystems/specs/1/COSS**.
 The short form **1/COSS** may be used when referring to the specification from other specifications in the same domain.
 
-Every specification (including branches) carries a different number.
+Every promoted specification (including branches) carries a different number.
 
 ## COSS Lifecycle
 
@@ -112,6 +115,7 @@ All new specifications are **raw** specifications.
 Changes to raw specifications can be unilateral and arbitrary.
 Those seeking to implement a raw specification should ask for it to be made a draft specification.
 Raw specifications have no contractual weight.
+A raw specification carries no number; on promotion to draft it receives the next number and moves to `specs/<number>/`.
 
 A raw specification MUST be complete against the domain's specification template before it is merged.
 
