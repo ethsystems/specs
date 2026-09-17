@@ -28,7 +28,7 @@ sed -E \
 sed -E \
   -e 's#\.\./([0-9]+)#\1.html#g' \
   -e 's#\.\./\.\./LICENSE#LICENSE#g' \
-  template/README.md | pd --metadata title="Specification template" --metadata shortname= -o "$OUT/template.html"
+  template/README.md | pd --metadata title="Specification template" --metadata shortname= --lua-filter scripts/spec-filter.lua -o "$OUT/template.html"
 
 for d in specs/*/; do
   n=$(basename "$d")
@@ -37,7 +37,7 @@ for d in specs/*/; do
     -e 's#\(\.\./([0-9]+)\)#(\1.html)#g' \
     -e 's#\.\./\.\./template/README\.md#template.html#g' \
     -e 's#\.\./\.\./LICENSE#LICENSE#g' \
-    "$d/README.md" | pd -o "$OUT/$n.html"
+    "$d/README.md" | pd --toc --toc-depth=3 --lua-filter scripts/spec-filter.lua -o "$OUT/$n.html"
   for img in "$d"*.png "$d"*.svg; do
     [ -f "$img" ] && cp "$img" "$OUT/"
   done

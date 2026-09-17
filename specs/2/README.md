@@ -470,13 +470,21 @@ That implementation runs this core under 3/ATTESTED-POOL, so its deposit circuit
 
 The reference implementation lives in [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/` (Noir circuits, Solidity contracts, Rust client).
 Its SPEC.md is the source this specification was promoted from.
+
 It implements the attestation-gated pool: it conforms to [3/ATTESTED-POOL](../3), and to this document through it, so its circuits and contracts enforce every rule of this document plus the profile's conjunct.
 As of pocs master commit [`edf1b60`](https://github.com/ethsystems/pocs/commit/edf1b60690208d2c9b3572b1a2ec796887785b51), the implementation satisfies the contract rules of Section 4.4 and the proof statements of Section 5.3, with tests for each negative case (reentrancy, payload binding, funding address, wrong spending key, proof length above depth, amount above 2^128, sum overflow) and an end-to-end run on a local chain with the real verifiers.
+
 Draft status (1/COSS) rests on this implementation and on the adversarial review of the gated specification this document was split from, and of the implementation against it; the review found and closed five conformance gaps and the funding-address authorization hole (Section 5.3).
+
 No ungated deployment is published, and the reference implementation does not exercise the ungated deposit statement of Section 5.3: its deposit circuit carries the 3/ATTESTED-POOL conjunct, so the shield-to-recipient path is unimplemented and was not separately reviewed.
 An implementation of this core alone claims core-only conformance by satisfying every requirement of this document (Section 5.5).
 The machinery test vectors remain unpublished (Section 7.4).
-Known reference-implementation shortcuts an implementer MUST NOT copy into production: in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorization signature, Section 5.3).
+
+Known reference-implementation shortcuts an implementer MUST NOT copy into production:
+
+- in-memory client-side Merkle trees;
+- no deployed relayer network;
+- deposits submitted by the funding address itself (no relayed-deposit authorization signature, Section 5.3).
 
 ### 7.2 Composition: Compliance Monitoring
 
