@@ -289,8 +289,10 @@ Key derivation:
 spending_key    = random()
 viewing_key     = random()
 spending_pubkey = Poseidon1(spending_key)      // used in commitments
-viewing_pubkey  = derive_pubkey(viewing_key)   // encrypted note delivery; secp256k1 in the reference implementation
+viewing_pubkey  = derive_pubkey(viewing_key)   // encrypted note delivery
 ```
+
+The reference implementation derives the viewing key pair on secp256k1.
 
 Note, commitment, nullifier:
 

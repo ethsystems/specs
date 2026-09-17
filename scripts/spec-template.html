@@ -180,22 +180,31 @@
     text-decoration: none;
   }
   .toc ul ul a { font-size: 0.78rem; }
-  .toc a:hover { color: var(--foreground); }
+  .toc a:hover, .toc a.active { color: var(--foreground); }
   @media (min-width: 80rem) {
     .toc {
       position: fixed;
       top: 5rem;
-      left: max(1rem, calc((100vw - 48rem) / 2 - 15rem));
-      width: 13rem;
+      left: calc((100vw + 48rem) / 2 + 2.5rem);
+      width: 12rem;
       max-height: calc(100vh - 7rem);
       margin: 0;
-      padding: 0;
+      padding: 0 0 0 0.9rem;
       overflow-y: auto;
+      scrollbar-width: none;
       border: 0;
+      border-left: 1px solid var(--border);
+      border-radius: 0;
       background: none;
     }
+    .toc::-webkit-scrollbar { display: none; }
     .toc summary { pointer-events: none; list-style: none; }
     .toc summary::-webkit-details-marker { display: none; }
+    .toc ul { margin-top: 0.5rem; }
+    .toc a { font-size: 0.74rem; padding: 0.12rem 0; }
+    .toc ul ul { display: none; margin: 0.1rem 0 0.25rem; }
+    .toc li.current > ul { display: block; }
+    .toc ul ul a { font-size: 0.7rem; }
   }
   .subtitle {
     max-width: 42rem;
@@ -417,6 +426,21 @@
     const sync = () => { if (wide.matches) toc.open = true; };
     sync();
     wide.addEventListener("change", sync);
+
+    const links = [...toc.querySelectorAll("a[href^='#']")];
+    const targets = links.map(a => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter(Boolean);
+    const highlight = () => {
+      let current = targets[0];
+      for (const t of targets) if (t.getBoundingClientRect().top < 120) current = t;
+      links.forEach(a => a.classList.toggle("active", a.hash === "#" + current.id));
+      toc.querySelectorAll("li.current").forEach(li => li.classList.remove("current"));
+      const active = links.find(a => a.hash === "#" + current.id);
+      if (active) active.closest("nav > ul > li").classList.add("current");
+    };
+    if (targets.length) {
+      highlight();
+      addEventListener("scroll", highlight, { passive: true });
+    }
   }
 </script>
 <script type="module">
