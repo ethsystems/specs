@@ -261,7 +261,7 @@ This profile adds:
 
 ### 7.1 Reference Implementation
 
-The reference implementation of 2/SHIELDED-POOL Section 7.1 is a deployment of this profile: [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/`.
+The reference implementation of 2/SHIELDED-POOL Section 7.1 is a deployment of this profile: [ethsystems/pocs](https://github.com/ethsystems/pocs) under `pocs/private-payment/shielded-pool/`, as of master commit [`edf1b60`](https://github.com/ethsystems/pocs/commit/edf1b60690208d2c9b3572b1a2ec796887785b51).
 It conforms to 2/SHIELDED-POOL under this profile, and its SPEC.md is the source both documents were promoted from.
 Draft status (1/COSS) rests on that implementation and on the adversarial review of the gated specification and of the implementation against it.
 Known shortcuts an implementer MUST NOT copy into production: a single compliance authority, and in-memory client-side attestation trees.
