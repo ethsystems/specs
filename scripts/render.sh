@@ -27,7 +27,7 @@ sed -E \
 sed -E \
   -e 's#\.\./([0-9]+)#\1.html#g' \
   -e 's#\.\./\.\./LICENSE#LICENSE#g' \
-  template/README.md | pd --metadata title="Specification template" -o "$OUT/template.html"
+  template/README.md | pd --metadata title="Specification template" --metadata shortname= -o "$OUT/template.html"
 
 for d in specs/*/; do
   n=$(basename "$d")

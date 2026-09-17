@@ -90,7 +90,7 @@ It is not by itself an institutional deployment target: an institution that requ
 - State-read metadata: fetching a note's Merkle path or scanning for incoming notes through shared RPC or indexer infrastructure reveals to that operator which note is about to be spent or read.
   Out of scope here; addressed by the nullifier-scaling extension (private information retrieval, PIR), or sidestepped by institutions running their own node and indexer.
 - Assets other than ERC-20: the mechanics generalize to any transferable asset, but this specification scopes to ERC-20.
-- Multi-asset atomic settlement (PvP/DvP): transfers are single-token by construction (Section 5.3).
+- Multi-asset atomic settlement (payment versus payment / delivery versus payment, PvP/DvP): transfers are single-token by construction (Section 5.3).
   Atomic two-asset settlement is a planned extension, not part of this core.
 - In-pool flow monitoring and policy enforcement: specified by the compliance-monitoring extension (Section 7.2).
 
@@ -143,7 +143,7 @@ Arity separation does not separate same-arity uses, so a profile that adds a sec
 
 The protocol composes three mechanisms:
 
-1. **UTXO notes** (unspent-transaction-output model)**.**
+1. **UTXO notes** (unspent-transaction-output model).
    Funds exist as note commitments in an append-only Merkle tree, spent by publishing nullifiers.
    Transfers consume input notes and create output notes with no public link between them.
 2. **Dual-key selective disclosure.**
@@ -382,7 +382,7 @@ The public-input order above is normative: a verifier consumes the inputs positi
 | Proving system | UltraHonk (reference; any EVM-verifiable zk-SNARK with equivalent soundness MAY be substituted) | All proof statements |
 
 Two conforming implementations MUST produce identical commitments, nullifiers, tree roots, and payload commitments for identical inputs; the hash and tree instantiations above are therefore normative for interoperability, while the proving system is a deployment choice.
-The payload commitment is computed over the exact bytes submitted on-chain; the reduction modulo `p` loses over two bits of the digest, which does not weaken the binding.
+The payload commitment is computed over the exact bytes submitted on-chain; the reduction modulo `p` loses over two bits of the digest, which does not materially weaken the binding.
 
 The note-encryption plaintext MUST be fixed-length and canonical, so a ciphertext's length reveals nothing about the note amount, and the note's commitment MUST be bound as associated data.
 The delivery payload MUST NOT carry a persistent linkable identifier such as the recipient's viewing public key: an anonymizing transport does not remove an application-layer identifier that ties a recipient to a specific on-chain commitment.
@@ -473,7 +473,8 @@ It implements the attestation-gated pool: it conforms to [3/ATTESTED-POOL](../3)
 As of pocs `fix/shielded-pool-conformance`, the implementation satisfies the contract rules of Section 4.4 and the proof statements of Section 5.3, with tests for each negative case (reentrancy, payload binding, funding address, wrong spending key, proof length above depth, amount above 2^128, sum overflow) and an end-to-end run on a local chain with the real verifiers.
 Draft status (1/COSS) rests on this implementation and on the adversarial review of the gated specification this document was split from, and of the implementation against it; the review found and closed five conformance gaps and the funding-address authorization hole (Section 5.3).
 No ungated deployment is published, and the reference implementation does not exercise the ungated deposit statement of Section 5.3: its deposit circuit carries the 3/ATTESTED-POOL conjunct, so the shield-to-recipient path is unimplemented and was not separately reviewed.
-An implementation of this core alone claims core-only conformance by satisfying every requirement of this document (Section 5.5). The machinery test vectors remain unpublished (Section 7.4).
+An implementation of this core alone claims core-only conformance by satisfying every requirement of this document (Section 5.5).
+The machinery test vectors remain unpublished (Section 7.4).
 Known reference-implementation shortcuts an implementer MUST NOT copy into production: in-memory client-side Merkle trees, no deployed relayer network, and deposits submitted by the funding address itself (no relayed-deposit authorization signature, Section 5.3).
 
 ### 7.2 Composition: Compliance Monitoring
@@ -546,10 +547,10 @@ and treat everything below as a per-system choice.
 
 | System | Commitment | Nullifier | Transfer arity | Key model | Screening |
 |---|---|---|---|---|---|
-| [Zcash](https://zips.z.cash/protocol/protocol.pdf) Sapling / Orchard | Pedersen over Jubjub / Sinsemilla over Pallas | BLAKE2s / Poseidon-based `Extract_P` | Variable-length Spend+Output or Action lists | Four tiers: spending, full viewing, incoming viewing, outgoing viewing; diversified addresses | None |
+| [Zcash](https://zips.z.cash/protocol/protocol.pdf) Sapling / Orchard | Pedersen over Jubjub / Sinsemilla over Pallas | BLAKE2s / `Extract_P` of a Poseidon-based PRF | Variable-length Spend+Output or Action lists | Four tiers: spending, full viewing, incoming viewing, outgoing viewing; diversified addresses | None |
 | [Railgun](https://docs.railgun.org/) | `Poseidon3(npk, tokenID, value)`, `npk` a nested two-level Poseidon | `Poseidon(nullifyingKey, leafIndex)`, binds leaf index, not commitment | 1-10 in, 1-5 out, publicly visible per transaction | Viewing key derives the nullifying key, so it detects spends | Off-chain allow-set proofs (Private Proofs of Innocence), enforced by broadcasters, absent from the contracts |
 | [Privacy Pools](https://github.com/0xbow-io/privacy-pools-core) (0xbow) | `Poseidon3(value, label, Poseidon2(nullifier, secret))`; `label` permanently links a note to its deposit | `Poseidon1(nullifier)`, unbound to the commitment | No in-pool transfer: deposit, withdraw, ragequit, windDown | No viewing keys, no encrypted-note channel | In-circuit at withdrawal: association-set inclusion, root posted by one permissioned role |
-| [Bermuda Bay](https://docs.bermudabay.xyz) | Unpublished (hash, curve, and tree depth not documented) | Unpublished | Multi-recipient in-pool transfers under a shielded-account wrapper | Spending and encryption keys split; recipient-only decryption | Entry KYT with deposits rejected on failure, plus an exit exclusion proof against a blacklist root |
+| [Bermuda Bay](https://docs.bermudabay.xyz) | Unpublished (hash, curve, and tree depth not documented) | Unpublished | Multi-recipient in-pool transfers under a shielded-account wrapper | Spending and encryption keys split; recipient-only decryption | Entry KYT (know-your-transaction) with deposits rejected on failure, plus an exit exclusion proof against a blacklist root |
 | [Zeto](https://github.com/hyperledger-labs/zeto) | `Poseidon4(value, salt, ownerPubKey.x, ownerPubKey.y)` on BabyJubjub; no token field | `Poseidon3(value, salt, ownerPrivateKey)`, unbound to the commitment | 2-in-2-out, plus a 10x10 batch variant | Per-transfer encryption to the receiver; one variant encrypts to a fixed auditing authority | Optional in-circuit KYC variants prove sender and receiver membership in an identities root |
 | This specification | `Poseidon4(token, amount, owner_pubkey, salt)` on BN254 | `Poseidon2(commitment, spending_key)`, bound to the commitment | 2-in-2-out, normative for this core | Spending key and viewing key split; viewing key reads incoming and change notes only | None in this core |
 
