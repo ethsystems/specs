@@ -4,6 +4,7 @@ title: Shielded Pool
 status: draft
 category: Standards Track
 tags: [shielded-pool, private-payments, selective-disclosure]
+map_refs: [pattern-shielding, private-stablecoins, approach-private-payments]
 editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
   - Aaryamann Challani <ac@ethsystems.org>

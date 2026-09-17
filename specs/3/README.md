@@ -4,6 +4,7 @@ title: Attested Shielded Pool
 status: draft
 category: Standards Track
 tags: [shielded-pool, compliance, attestation]
+map_refs: [pattern-shielding, approach-private-payments]
 editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
   - Aaryamann Challani <ac@ethsystems.org>

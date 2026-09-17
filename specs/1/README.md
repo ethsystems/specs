@@ -4,6 +4,7 @@ title: Consensus-Oriented Specification System
 status: draft
 category: Best Current Practice
 tags:
+map_refs:
 editor: Oskar Thoren <oskar@ethsystems.org>
 contributors:
   - Pieter Hintjens <ph@imatix.com>
@@ -202,6 +203,7 @@ This will enable programmatic access to specification metadata.
 | **status**       | status               | string | draft                                   |
 | **category**     | category             | string | Best Current Practice                   |
 | **tags**         | 0 or several tags    | list   | shielded-pool, compliance               |
+| **map_refs**     | 0 or several [map](https://github.com/ethsystems/map) entry filenames | list | pattern-shielding |
 | **editor**       | editor name/email    | string | Oskar Thoren <oskar@ethsystems.org>     |
 | **contributors** | contributors         | list   | - Pieter Hintjens <ph@imatix.com>       |
 

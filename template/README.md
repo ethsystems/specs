@@ -4,6 +4,7 @@ title: Full Specification Name
 status: raw
 category: Standards Track
 tags:
+map_refs:
 editor: Name <name@example.com>
 contributors:
 ---
