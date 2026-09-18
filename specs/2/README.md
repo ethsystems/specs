@@ -548,6 +548,9 @@ its specification, its documentation, or its circuit and contract code.
 No claim is taken from a third-party survey.
 The comparison covers design, not audit results or operational history.
 It is non-normative and is a snapshot: these systems change.
+Tornado Cash is omitted.
+Its classic pools are fixed-denomination mixers, without in-pool transfer or in-circuit value conservation.
+[Tornado Cash Nova](https://github.com/tornadocash/tornado-nova) adds both on Gnosis Chain, and sits at the screens-nowhere point Zcash already marks.
 
 Five invariants hold across all five systems and this specification:
 
