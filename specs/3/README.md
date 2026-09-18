@@ -44,6 +44,8 @@ This profile adds two constraints:
 - Railgun's Private Proofs of Innocence and Privacy Pools v1's association sets screen funds, after entry and at exit respectively.
   This profile screens participants, at entry.
   2/SHIELDED-POOL Appendix A places these systems on that axis.
+- Bermuda Bay also screens at entry, with deposits rejected on a failed know-your-transaction (KYT) check.
+  That check is operator-side; this profile's entry check is cryptographic, an in-circuit proof of attestation membership, with expiry and revocation in the registry.
 
 No open specification combines attestation-registry semantics (expiry, revocation, authorized attesters) with dual-key selective disclosure for a shielded pool on Ethereum L1.
 That is the gap this document fills.
