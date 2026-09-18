@@ -43,8 +43,11 @@ Separating the two is what makes a control claim checkable: a gate is only separ
 
 - Zcash Sapling/Orchard define both the note-commitment-nullifier shielded pool model and the dual-key separation of spending and viewing authority that this protocol builds on, but target a native asset on a dedicated chain rather than ERC-20 tokens on Ethereum.
 - Tornado Cash, Railgun, and Privacy Pools bring shielded pools to Ethereum.
-  Railgun's Private Proofs of Innocence screen funds after entry: a user proves non-membership in a blocklist, and relayers check the proof off-chain.
-  Privacy Pools generalizes this to association sets: a user proves membership in any published set, inclusion or exclusion, and the proof is verified on-chain at withdrawal.
+  Railgun's Private Proofs of Innocence screen funds after entry: a user proves non-membership in a blocklist.
+  Broadcasters, Railgun's submission parties similar to relayers, check the proof off-chain.
+  Privacy Pools generalizes this to association sets: a user proves membership in any published set, inclusion or exclusion.
+  The deployed v1 verifies the proof on-chain at withdrawal.
+  Its documented v2 (testnet as of September 2026) instead gates every private spend on association-set approval.
   Each fixes one screening placement in its own design.
   This document fixes none, and names the points at which a profile attaches a check at entry or on in-pool flow.
 - Deployed shielded pools share five invariants and diverge on nearly everything below them.
@@ -559,9 +562,9 @@ and treat everything below as a per-system choice.
 | System | Commitment | Nullifier | Transfer arity | Key model | Screening |
 |---|---|---|---|---|---|
 | [Zcash](https://zips.z.cash/protocol/protocol.pdf) Sapling / Orchard | Pedersen over Jubjub / Sinsemilla over Pallas | BLAKE2s / `Extract_P` of a Poseidon-based PRF | Variable-length Spend+Output or Action lists | Four tiers: spending, full viewing, incoming viewing, outgoing viewing; diversified addresses | None |
-| [Railgun](https://docs.railgun.org/) | `Poseidon3(npk, tokenID, value)`, `npk` a nested two-level Poseidon | `Poseidon(nullifyingKey, leafIndex)`, binds leaf index, not commitment | 1-10 in, 1-5 out, publicly visible per transaction | Viewing key derives the nullifying key, so it detects spends | Off-chain allow-set proofs (Private Proofs of Innocence), enforced by broadcasters, absent from the contracts |
-| [Privacy Pools](https://github.com/0xbow-io/privacy-pools-core) (0xbow) | `Poseidon3(value, label, Poseidon2(nullifier, secret))`; `label` permanently links a note to its deposit | `Poseidon1(nullifier)`, unbound to the commitment | No in-pool transfer: deposit, withdraw, ragequit, windDown | No viewing keys, no encrypted-note channel | In-circuit at withdrawal: association-set inclusion, root posted by one permissioned role |
-| [Bermuda Bay](https://docs.bermudabay.xyz) | Unpublished (hash, curve, and tree depth not documented) | Unpublished | Multi-recipient in-pool transfers under a shielded-account wrapper | Spending and encryption keys split; recipient-only decryption | Entry KYT (know-your-transaction) with deposits rejected on failure, plus an exit exclusion proof against a blacklist root |
+| [Railgun](https://docs.railgun.org/) | `Poseidon3(npk, tokenID, value)`, `npk` a nested two-level Poseidon | `Poseidon(nullifyingKey, leafIndex)`, binds leaf index, not commitment | 1-10 in, 1-5 out, publicly visible per transaction | Viewing key derives the nullifying key, so it detects spends | Off-chain allow-set proofs (Private Proofs of Innocence), enforced by broadcasters (reached over Waku), absent from the contracts |
+| [Privacy Pools v1](https://github.com/0xbow-io/privacy-pools-core) (0xbow, tag `v1.3.0`) | `Poseidon3(value, label, Poseidon2(nullifier, secret))`; `label` permanently links a note to its deposit | `Poseidon1(nullifier)`, unbound to the commitment | No in-pool transfer: deposit, withdraw, ragequit, windDown | No in-protocol viewing keys, no encrypted-note channel | In-circuit at withdrawal: association-set inclusion, root posted by one permissioned role |
+| [Bermuda Bay](https://docs.bermudabay.xyz) | [Poseidon2 permutation](https://eprint.iacr.org/2023/323) hash (not the `PoseidonN` notation of Section 2) over BN254, eight note fields, per circuit source embedded in [SDK build 0.1.8-plasma1](https://api.tilapialabs.xyz/bermuda/v0.1.8-plasma1/sdk); production parameters, including tree depth, unverified | Poseidon2 permutation hash of (commitment, chain id, nullifier secret), same source; binds the chain id | Multi-recipient in-pool transfers under a shielded-account wrapper | Spending and encryption keys split; recipient-only decryption | Entry KYT (know-your-transaction) with deposits rejected on failure, plus an exit exclusion proof against a blacklist root |
 | [Zeto](https://github.com/hyperledger-labs/zeto) | `Poseidon4(value, salt, ownerPubKey.x, ownerPubKey.y)` on BabyJubjub; no token field | `Poseidon3(value, salt, ownerPrivateKey)`, unbound to the commitment | 2-in-2-out, plus a 10x10 batch variant | Per-transfer encryption to the receiver; one variant encrypts to a fixed auditing authority | Optional in-circuit KYC variants prove sender and receiver membership in an identities root |
 | This specification | `Poseidon4(token, amount, owner_pubkey, salt)` on BN254 | `Poseidon2(commitment, spending_key)`, bound to the commitment | 2-in-2-out, normative for this core | Spending key and viewing key split; viewing key reads incoming and change notes only | None in this core |
 
@@ -571,11 +574,17 @@ this specification carries the token in the note and supports a token set.
 Bermuda Bay makes a relayer mandatory;
 here relayer use is OPTIONAL (Section 3.3).
 
+The Privacy Pools row describes v1, the version deployed on mainnet.
+0xbow documents a v2, on testnet as of September 2026 ([v2 documentation](https://privacy-pools-v2-docs.vercel.app/introduction/v1-vs-v2), read 2026-09-18).
+The v2 design binds the nullifier to the commitment and adds in-pool transfers.
+It adds protocol viewing keys with an on-chain keystore.
+It gates every private spend on association-set approval.
+
 Where a system places its screening check is the axis that separates the field,
 and it separates the field more cleanly than any cryptographic choice.
 Zcash screens nowhere.
 Railgun screens after entry, off-chain, at the broadcaster.
-Privacy Pools screens in-circuit at the exit.
+Privacy Pools v1 screens in-circuit at the exit; its documented v2 moves the check to every private spend.
 Zeto's KYC variants screen in-circuit on every transfer.
 Bermuda Bay screens at both boundaries: KYT at entry and an exclusion proof at exit.
 This core screens nowhere, and [3/ATTESTED-POOL](../3) screens in-circuit at entry.

@@ -41,7 +41,7 @@ This profile adds two constraints:
 - Zeto (Hyperledger) is the closest prior design: its transfer templates check sender and receivers against an identities root in-circuit.
   This profile differs in gating entry rather than every transfer, and in its explicit attestation registry semantics: expiry, revocation, and authorized attesters.
 - ERC-3643 defines permissioned-token compliance semantics for transparent tokens; this profile provides the analogous boundary around a shielded pool.
-- Railgun's Private Proofs of Innocence and Privacy Pools' association sets screen funds, after entry and at exit respectively.
+- Railgun's Private Proofs of Innocence and Privacy Pools v1's association sets screen funds, after entry and at exit respectively.
   This profile screens participants, at entry.
   2/SHIELDED-POOL Appendix A places these systems on that axis.
 
