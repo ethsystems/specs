@@ -198,11 +198,14 @@ sequenceDiagram
 
 1. [transactor] Generate a note (token, amount, an owner spending public key, fresh random salt) and compute its commitment.
    The owner key MAY be the depositor's own or a recipient's (Section 5.3).
+   Encrypt the note to the owner's viewing key.
+   Nothing binds an owner spending key to a viewing key (Section 6.3), and no shielded address format is specified (Section 7.4).
+   A depositor shielding to a recipient therefore obtains that recipient's viewing public key out of band.
 2. [transactor] Generate a proof for the deposit statement (Section 5.3): the commitment is well-formed over the deposited token and amount.
 3. [transactor] Approve the ERC-20 transfer and submit the deposit from the funding address, or sign a deposit authorization and send it to a relayer.
 4. [relayer] Submit the transaction, if a relayer is used.
 5. [contract] Verify the proof and check that the funding address authorized the deposit (Section 5.3); on failure, revert.
-6. [contract] Append the commitment to the commitment tree, emit a deposit event carrying the note encrypted to the owner key's viewing key, and transfer tokens from the funding address into the pool.
+6. [contract] Append the commitment to the commitment tree, emit a deposit event carrying the encrypted note, and transfer tokens from the funding address into the pool.
    Insertion and event precede the external call, per Section 4.4.
    Where the owner key is a recipient's, that recipient MUST apply the check of Section 4.2 step 3 before treating the note as received.
 
@@ -316,6 +319,8 @@ Only the spending-key holder can compute the nullifier, which spends the commitm
 ### 5.2 On-Chain State
 
 - Commitment tree: an append-only incremental Merkle tree of note commitments, with a bounded historical-root window (Section 4.4).
+- Commitment-seen set: a mapping from commitment to inserted status, which answers the duplicate check of Section 4.4.
+  Append-only.
 - Nullifier set: a mapping from nullifier to spent status.
   Append-only.
 - Supported-token set and verifier reference, governed as Section 3.2 requires.

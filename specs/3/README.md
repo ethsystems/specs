@@ -203,7 +203,10 @@ It also removes the shield-to-recipient case that the core permits, which is the
 The single-witness rule of 2/SHIELDED-POOL Section 5.3 extends to this statement: `spending_key` MUST be one witness variable feeding owner-key derivation and attestation membership alike.
 Independent per-use equality constraints in this position are a historically shipped soundness bug.
 
-`expires_at` is bound into the leaf but not compared against current time in-circuit; enforcement of expiry is registry-side in this profile (see Section 6.3 and the compliance-monitoring extension, which constrains it in-circuit).
+`expires_at` is bound into the leaf but not compared against current time in-circuit.
+This profile records expiry in the leaf and enforces it only through attester revocation (Section 4.2).
+An expired-but-unrevoked attestation therefore still admits deposits (Section 6.3).
+The compliance-monitoring extension constrains expiry in-circuit.
 
 ### 5.4 Cryptographic Profile
 
