@@ -216,6 +216,7 @@ This will enable programmatic access to specification metadata.
 ### Specification Template
 
 Standards Track specifications MUST be based on the domain's [specification template](../../template/README.md).
+A specification MAY include the template's Acknowledgments section; it is OPTIONAL.
 Informational and Best Current Practice specifications MAY deviate from the template where its structure does not apply.
 
 ## Conventions
