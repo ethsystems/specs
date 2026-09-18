@@ -8,39 +8,58 @@ mkdir -p "$OUT"
 cp LICENSE "$OUT/"
 cp specs/1/COPYING "$OUT/"
 
-pd() { pandoc -f gfm+yaml_metadata_block -t html5 --standalone --template "$TPL" "$@"; }
+pd() { pandoc -f gfm+yaml_metadata_block -t html5 --standalone --wrap=none --template "$TPL" "$@"; }
+
+# Meta-refresh stub so an old flat URL still reaches the clean one.
+stub() {
+  printf '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta http-equiv="refresh" content="0; url=%s">\n<link rel="canonical" href="https://specs.ethsystems.org%s">\n<title>Moved</title>\n</head>\n<body><p>This page moved to <a href="%s">%s</a>.</p></body>\n</html>\n' \
+    "$2" "$2" "$2" "$2" > "$OUT/$1"
+}
 
 sed -E \
-  -e 's#\./specs/([0-9]+)#\1.html#g' \
-  -e 's#\./CONTRIBUTING\.md#contributing.html#g' \
-  -e 's#\./template/README\.md#template.html#g' \
+  -e 's#\./specs/([0-9]+)#/\1/#g' \
+  -e 's#\./CONTRIBUTING\.md#/contributing/#g' \
+  -e 's#\./template/README\.md#/template/#g' \
   README.md | awk '
     /^## (Build|Release|Planned|Related|License)[[:space:]]*$/ { skipping = 1; next }
     /^## / && skipping { skipping = 0 }
     !skipping { print }
-  ' | pd --metadata title="EthSystems Specifications" -o "$OUT/index.html"
+  ' | pd --metadata title="EthSystems Specifications" \
+    --metadata description="Specifications for confidential systems for institutions on Ethereum, by EthSystems." \
+    --metadata ogpath=/ -o "$OUT/index.html"
 
+mkdir -p "$OUT/contributing"
 sed -E \
-  -e 's#\./specs/([0-9]+)#\1.html#g' \
-  -e 's#\./template/README\.md#template.html#g' \
-  CONTRIBUTING.md | pd --metadata title="Contributing" -o "$OUT/contributing.html"
+  -e 's#\./specs/([0-9]+)#/\1/#g' \
+  -e 's#\./template/README\.md#/template/#g' \
+  -e 's#\./LICENSE#/LICENSE#g' \
+  CONTRIBUTING.md | pd --metadata title="Contributing" \
+    --metadata description="How to propose, review, and promote an EthSystems specification." \
+    --metadata ogpath=/contributing/ -o "$OUT/contributing/index.html"
+stub contributing.html /contributing/
 
+mkdir -p "$OUT/template"
 sed -E \
-  -e 's#\.\./([0-9]+)#\1.html#g' \
-  -e 's#\.\./\.\./LICENSE#LICENSE#g' \
-  template/README.md | pd --metadata title="Specification template" --metadata shortname= --lua-filter scripts/spec-filter.lua -o "$OUT/template.html"
+  -e 's#\.\./([0-9]+)#/\1/#g' \
+  -e 's#\.\./\.\./LICENSE#/LICENSE#g' \
+  template/README.md | pd --metadata title="Specification template" --metadata shortname= \
+    --metadata description="The template every EthSystems Standards Track specification uses." \
+    --metadata ogpath=/template/ --lua-filter scripts/spec-filter.lua -o "$OUT/template/index.html"
+stub template.html /template/
 
 for d in specs/*/; do
   n=$(basename "$d")
   [ -f "$d/README.md" ] || continue
+  mkdir -p "$OUT/$n"
   sed -E \
-    -e 's#\(\.\./([0-9]+)\)#(\1.html)#g' \
-    -e 's#\.\./\.\./template/README\.md#template.html#g' \
-    -e 's#\.\./\.\./LICENSE#LICENSE#g' \
-    "$d/README.md" | pd --toc --toc-depth=3 --lua-filter scripts/spec-filter.lua -o "$OUT/$n.html"
-  for img in "$d"*.png "$d"*.svg; do
-    [ -f "$img" ] && cp "$img" "$OUT/"
+    -e 's#\(\.\./([0-9]+)\)#(/\1/)#g' \
+    -e 's#\.\./\.\./template/README\.md#/template/#g' \
+    -e 's#\.\./\.\./LICENSE#/LICENSE#g' \
+    "$d/README.md" | pd --toc --toc-depth=3 --metadata ogpath="/$n/" --lua-filter scripts/spec-filter.lua -o "$OUT/$n/index.html"
+  for f in "$d"*.png "$d"*.svg "$d"COPYING; do
+    [ -f "$f" ] && cp "$f" "$OUT/$n/"
   done
+  stub "$n.html" "/$n/"
 done
 
 echo "rendered to $OUT/"

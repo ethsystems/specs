@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0A0A0A">
 <title>$if(shortname)$$shortname$ · EthSystems$else$$title$$endif$</title>
+<meta property="og:title" content="$if(shortname)$$shortname$ · $title$$else$$title$$endif$">
+<meta property="og:description" content="$if(description)$$description$$else$$if(shortname)$$title$. EthSystems specification $shortname$, status $status$.$else$$title$$endif$$endif$">
+<meta property="og:type" content="$if(shortname)$article$else$website$endif$">
+<meta property="og:url" content="https://specs.ethsystems.org$ogpath$">
+<meta property="og:site_name" content="EthSystems Specifications">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&amp;family=Geist:wght@300..700&amp;family=Geist+Mono:wght@400&amp;display=swap">
@@ -377,13 +383,13 @@
   <div class="site-shell">
     <a class="brand" href="https://ethsystems.org/" aria-label="Back to EthSystems">← ethsystems.org</a>
     <nav class="site-nav" aria-label="Primary navigation">
-      <a href="index.html">Specs</a>
+      <a href="/">Specs</a>
       <a href="https://github.com/ethsystems/specs">Source</a>
     </nav>
   </div>
 </header>
 <main id="main-content" class="page">
-  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">EthSystems Specs</a>$if(shortname)$ / $shortname$$endif$</nav>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">EthSystems Specs</a>$if(shortname)$ / $shortname$$endif$</nav>
   $if(shortname)$
   <h1>$shortname$</h1>
   <p class="subtitle">$title$</p>

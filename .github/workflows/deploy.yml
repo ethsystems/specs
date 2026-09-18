@@ -38,15 +38,29 @@ jobs:
           # Render a fresh source tree so stale pages cannot enter the artifact.
           git archive HEAD | tar -x -C "$source_dir"
           bash "$source_dir/scripts/render.sh"
-          # Only these files may cross the publication boundary.
-          files=(1.html 2.html 3.html COPYING LICENSE contributing.html index.html lifecycle.png template.html)
+          # Only these directories and files may cross the publication boundary.
+          dirs=(1 2 3 contributing template)
+          for dir in "${dirs[@]}"; do
+            test -d "$source_dir/build/$dir"
+            test ! -L "$source_dir/build/$dir"
+          done
+          files=(
+            COPYING LICENSE index.html
+            1.html 2.html 3.html contributing.html template.html
+            1/index.html 1/COPYING 1/lifecycle.png
+            2/index.html
+            3/index.html
+            contributing/index.html
+            template/index.html
+          )
           for file in "${files[@]}"; do
             test -f "$source_dir/build/$file"
             test ! -L "$source_dir/build/$file"
+            mkdir -p "$site_dir/$(dirname "$file")"
             cp "$source_dir/build/$file" "$site_dir/$file"
           done
           diff -u <(printf '%s\n' "${files[@]}" | LC_ALL=C sort) \
-            <(find "$site_dir" -mindepth 1 -exec basename {} \; | LC_ALL=C sort)
+            <(cd "$site_dir" && find . -type f | sed 's#^\./##' | LC_ALL=C sort)
           echo "path=$site_dir" >> "$GITHUB_OUTPUT"
 
       - uses: actions/configure-pages@v5
