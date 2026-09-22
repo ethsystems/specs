@@ -1,10 +1,16 @@
 name: Release
 
+# Private main reaches the public mirror on a delay, unattended. Every day
+# this pushes the newest commit that is at least 7 days old. A manual run with
+# a sha releases now. Set the repository variable SYNC_ENABLED to "false" to
+# pause both; unset or "true" means live.
 on:
+  schedule:
+    - cron: '0 14 * * *'
   workflow_dispatch:
     inputs:
       sha:
-        description: 'Commit or ref to release (default: newest commit older than 7 days). Use "origin/main" to release everything.'
+        description: 'Release this commit or ref now (default: newest commit older than 7 days)'
         required: false
         type: string
 
@@ -19,7 +25,7 @@ jobs:
   release:
     if: >-
       github.repository == 'ethsystems/specs-private'
-      && vars.SYNC_ENABLED == 'true'
+      && vars.SYNC_ENABLED != 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -57,9 +63,11 @@ jobs:
         run: |
           set -euo pipefail
           sha="${REQUESTED_SHA:-$(git rev-list -1 --before='7 days ago' origin/main)}"
+          # A quiet day is normal on the schedule. A manual run that pushes
+          # nothing is a mistake, so it fails.
+          noop() { echo "$1"; [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && exit 1 || exit 0; }
           if [ -z "$sha" ]; then
-            echo "Nothing on main is old enough to release yet."
-            exit 1
+            noop "Nothing on main is old enough to release yet."
           fi
           sha="$(git rev-parse --verify "${sha}^{commit}")"
           if ! git merge-base --is-ancestor "$sha" origin/main; then
@@ -69,8 +77,7 @@ jobs:
           if git ls-remote --exit-code --heads https://github.com/ethsystems/specs.git refs/heads/main; then
             git fetch --no-tags --quiet https://github.com/ethsystems/specs.git main
             if git merge-base --is-ancestor "$sha" FETCH_HEAD; then
-              echo "Already released: $sha is contained in the target. Nothing to do."
-              exit 1
+              noop "Already released: $sha is contained in the target. Nothing to do."
             fi
           else
             result=$?
