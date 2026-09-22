@@ -1,0 +1,42 @@
+# The public mirror only moves when someone runs scripts/release.sh. Nothing
+# otherwise reports that private main is ahead, so a finished specification can
+# sit unpublished. This says so once a week, and only once it matters: it is
+# silent while every unreleased commit is still inside the 7-day embargo.
+name: Release drift
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    # This file is mirrored to the public repo, where it has nothing to compare.
+    if: github.repository == 'ethsystems/specs-private'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Compare private main against the public mirror
+        run: |
+          set -euo pipefail
+          git fetch --no-tags -q https://github.com/ethsystems/specs.git main
+          pending="$(git rev-list --count FETCH_HEAD..origin/main)"
+          due="$(git rev-list --count --before='7 days ago' FETCH_HEAD..origin/main)"
+          {
+            echo "public main: $(git log -1 --format='%h %cs %s' FETCH_HEAD)"
+            echo
+            echo "unreleased: $pending commit(s), of which $due are past the 7-day embargo"
+            git log --format='- %h %cs %s' FETCH_HEAD..origin/main
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "$due" -gt 0 ]; then
+            echo "::error::$due commit(s) are past the embargo and unreleased. Run scripts/release.sh."
+            exit 1
+          fi

@@ -59,7 +59,7 @@ jobs:
           sha="${REQUESTED_SHA:-$(git rev-list -1 --before='7 days ago' origin/main)}"
           if [ -z "$sha" ]; then
             echo "Nothing on main is old enough to release yet."
-            exit 0
+            exit 1
           fi
           sha="$(git rev-parse --verify "${sha}^{commit}")"
           if ! git merge-base --is-ancestor "$sha" origin/main; then
@@ -70,7 +70,7 @@ jobs:
             git fetch --no-tags --quiet https://github.com/ethsystems/specs.git main
             if git merge-base --is-ancestor "$sha" FETCH_HEAD; then
               echo "Already released: $sha is contained in the target. Nothing to do."
-              exit 0
+              exit 1
             fi
           else
             result=$?
