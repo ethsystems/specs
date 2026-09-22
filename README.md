@@ -35,26 +35,9 @@ python3 -m http.server 8765 --bind 127.0.0.1 -d build  # open http://127.0.0.1:8
 
 `build/` is git-ignored. Do not commit rendered output.
 
-## Release
-
-Nothing syncs to the public mirror automatically.
-To publish, run one command:
-
-```bash
-scripts/release.sh              # embargo default: newest commit older than 7 days
-scripts/release.sh origin/main  # release everything on main
-```
-
-It arms `SYNC_ENABLED`, dispatches the Release workflow (fast-forward push of one sha
-to [ethsystems/specs](https://github.com/ethsystems/specs)), waits for it, and disarms.
-The public deploy then rebuilds [specs.ethsystems.org](https://specs.ethsystems.org).
-
-## Planned
-
-Further specifications are promoted from PoC and engagement work as they mature. The working queue is internal.
-
 ## Related
 
+- [specs.ethsystems.org](https://specs.ethsystems.org): these specifications, rendered.
 - [ethsystems/map](https://github.com/ethsystems/map): use cases, patterns, and approaches. Patterns say what and why; specs here are the canonical normative protocols.
 - [ethsystems/pocs](https://github.com/ethsystems/pocs): proof of concepts. Each PoC's SPEC.md is an instance of (or a candidate for) a spec here.
 - [ethsystems/works](https://github.com/ethsystems/works): reusable Rust building blocks implementing these protocols.
