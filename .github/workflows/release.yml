@@ -1,9 +1,9 @@
 name: Release
 
-# Private main reaches the public mirror on a delay, unattended. Every day
-# this pushes the newest commit that is at least 7 days old. A manual run with
-# a sha releases now. Set the repository variable SYNC_ENABLED to "false" to
-# pause both; unset or "true" means live.
+# Delayed sync to the public mirror, same as pocs-private. A commit on main
+# becomes public 7 days after it lands: the job runs daily and pushes the
+# newest commit that is at least 7 days old. A manual run with a sha releases
+# sooner. SYNC_ENABLED set to "false" pauses everything.
 on:
   schedule:
     - cron: '0 14 * * *'
