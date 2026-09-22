@@ -29,6 +29,7 @@ The site is rendered from these Markdown files with [pandoc](https://pandoc.org)
 
 ```bash
 bash scripts/render.sh                                 # writes build/
+bash scripts/check-build.sh                            # assert build/ matches the source tree
 python3 -m http.server 8765 --bind 127.0.0.1 -d build  # open http://127.0.0.1:8765
 ```
 

@@ -21,8 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Install pandoc
         run: |
@@ -33,34 +31,26 @@ jobs:
         id: site
         run: |
           set -euo pipefail
+          # A symlink in the source tree could point a published page at any
+          # file on the runner. Reject it before anything is rendered.
+          if git ls-files -s | awk '$1 == "120000" { print "  " $4; found = 1 } END { exit !found }'; then
+            echo "::error::the source tree holds the symlinks listed above. Replace them with regular files."
+            exit 1
+          fi
           source_dir="$(mktemp -d "$RUNNER_TEMP/specs-source.XXXXXX")"
           site_dir="$(mktemp -d "$RUNNER_TEMP/specs-site.XXXXXX")"
           # Render a fresh source tree so stale pages cannot enter the artifact.
           git archive HEAD | tar -x -C "$source_dir"
           bash "$source_dir/scripts/render.sh"
-          # Only these directories and files may cross the publication boundary.
-          dirs=(1 2 3 contributing template)
-          for dir in "${dirs[@]}"; do
-            test -d "$source_dir/build/$dir"
-            test ! -L "$source_dir/build/$dir"
-          done
-          files=(
-            COPYING LICENSE index.html
-            1.html 2.html 3.html contributing.html template.html
-            1/index.html 1/COPYING 1/lifecycle.png
-            2/index.html
-            3/index.html
-            contributing/index.html
-            template/index.html
-          )
-          for file in "${files[@]}"; do
-            test -f "$source_dir/build/$file"
-            test ! -L "$source_dir/build/$file"
+          # check-build.sh derives the publishable set from the source tree and
+          # asserts build/ matches it exactly. Adding a specification needs no
+          # edit here: add specs/<N>/ and its row in the README.md index table.
+          bash "$source_dir/scripts/check-build.sh" "$source_dir" > "$RUNNER_TEMP/verified"
+          # Copy only the verified set, so nothing else can reach the artifact.
+          while read -r file; do
             mkdir -p "$site_dir/$(dirname "$file")"
             cp "$source_dir/build/$file" "$site_dir/$file"
-          done
-          diff -u <(printf '%s\n' "${files[@]}" | LC_ALL=C sort) \
-            <(cd "$site_dir" && find . -type f | sed 's#^\./##' | LC_ALL=C sort)
+          done < "$RUNNER_TEMP/verified"
           echo "path=$site_dir" >> "$GITHUB_OUTPUT"
 
       - uses: actions/configure-pages@v5
