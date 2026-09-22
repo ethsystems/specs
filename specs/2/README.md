@@ -550,7 +550,8 @@ The comparison covers design, not audit results or operational history.
 It is non-normative and is a snapshot: these systems change.
 Tornado Cash is omitted.
 Its classic pools are fixed-denomination mixers, without in-pool transfer or in-circuit value conservation.
-[Tornado Cash Nova](https://github.com/tornadocash/tornado-nova) adds both on Gnosis Chain, bridged from Ethereum mainnet, and sits at the screens-nowhere point Zcash already marks.
+[Tornado Cash Nova](https://github.com/tornadocash/tornado-nova) adds both, on Gnosis Chain with funds bridged from Ethereum mainnet.
+It screens nowhere, the point Zcash already marks on the screening axis below; a row would add no position.
 
 Five invariants hold across all five systems and this specification:
 

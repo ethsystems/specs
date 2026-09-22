@@ -45,7 +45,8 @@ This profile adds two constraints:
   This profile screens participants, at entry.
   2/SHIELDED-POOL Appendix A places these systems on that axis.
 - Bermuda Bay also screens at entry, with deposits rejected on a failed know-your-transaction (KYT) check.
-  That check is operator-side; this profile's entry check is cryptographic, an in-circuit proof of attestation membership, with expiry and revocation in the registry.
+  That check is operator-side, and it does not end at the boundary: every deposit carries an operator-assigned identifier whose lineage follows the funds through in-pool transfers, and a flagged lineage loses the private exit.
+  This profile's entry check is cryptographic, an in-circuit proof of attestation membership, with expiry and revocation in the registry, and nothing attaches to the funds after entry.
 
 No open specification combines attestation-registry semantics (expiry, revocation, authorized attesters) with dual-key selective disclosure for a shielded pool on Ethereum L1.
 That is the gap this document fills.
