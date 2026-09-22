@@ -51,11 +51,20 @@ for d in specs/*/; do
   n=$(basename "$d")
   [ -f "$d/README.md" ] || continue
   mkdir -p "$OUT/$n"
+  # Provenance comes from version control, never from a hand-maintained field.
+  # SPECS_GIT points at a checkout with history when the render runs from an
+  # exported tree, as it does in CI.
+  meta=()
+  rev="$(git -C "${SPECS_GIT:-.}" log -1 --format='%cs %H' -- "specs/$n" 2>/dev/null || true)"
+  if [ -n "$rev" ]; then
+    meta=(--metadata "revised=${rev%% *}"
+          --metadata "revurl=https://github.com/${GITHUB_REPOSITORY:-ethsystems/specs}/blob/${rev##* }/specs/$n/README.md")
+  fi
   sed -E \
     -e 's#\(\.\./([0-9]+)\)#(/\1/)#g' \
     -e 's#\.\./\.\./template/README\.md#/template/#g' \
     -e 's#\.\./\.\./LICENSE#/LICENSE#g' \
-    "$d/README.md" | pd --toc --toc-depth=3 --metadata ogpath="/$n/" --lua-filter scripts/spec-filter.lua -o "$OUT/$n/index.html"
+    "$d/README.md" | pd --toc --toc-depth=3 --metadata ogpath="/$n/" ${meta[@]+"${meta[@]}"} --lua-filter scripts/spec-filter.lua -o "$OUT/$n/index.html"
   for f in "$d"*.png "$d"*.svg "$d"COPYING; do
     [ -f "$f" ] && cp "$f" "$OUT/$n/"
   done

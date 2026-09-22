@@ -26,8 +26,6 @@ It is equivalent except for some areas:
 - lifecycle transitions are tied to explicit artifacts (see "COSS Lifecycle");
 - miscellaneous metadata, editor, and format/link updates.
 
-This EthSystems adaptation was revised on 2026-09-09.
-
 ## License
 
 Copyright (c) 2008-26 the Editor and Contributors.
@@ -212,6 +210,10 @@ This will enable programmatic access to specification metadata.
 | **map_refs**     | 0 or several [map](https://github.com/ethsystems/map) entry filenames | list | pattern-shielding |
 | **editor**       | editor name/email    | string | Oskar Thoren <oskar@ethsystems.org>     |
 | **contributors** | contributors         | list   | - Pieter Hintjens <ph@imatix.com>       |
+
+Specifications do not carry a revision date as metadata.
+The published page shows the date of the last change to the specification, and links to its source at that commit, both taken from version control.
+A date maintained by hand goes stale; a date taken from version control cannot.
 
 ### Specification Template
 

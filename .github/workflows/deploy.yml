@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Each specification's revised date is the date of the last commit
+          # touching it, so the build needs history.
+          fetch-depth: 0
 
       - name: Install pandoc
         run: |
@@ -41,7 +45,8 @@ jobs:
           site_dir="$(mktemp -d "$RUNNER_TEMP/specs-site.XXXXXX")"
           # Render a fresh source tree so stale pages cannot enter the artifact.
           git archive HEAD | tar -x -C "$source_dir"
-          bash "$source_dir/scripts/render.sh"
+          # The exported tree has no .git, so point render.sh at the checkout.
+          SPECS_GIT="$GITHUB_WORKSPACE" bash "$source_dir/scripts/render.sh"
           # check-build.sh derives the publishable set from the source tree and
           # asserts build/ matches it exactly. Adding a specification needs no
           # edit here: add specs/<N>/ and its row in the README.md index table.

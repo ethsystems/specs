@@ -399,6 +399,7 @@
   $if(tags)$<dt>tags</dt><dd>$for(tags)$$tags$$sep$, $endfor$</dd>$endif$
   $if(editor)$<dt>editor</dt><dd>$editor$</dd>$endif$
   $if(contributors)$<dt>contributors</dt><dd>$for(contributors)$$contributors$$sep$, $endfor$</dd>$endif$
+  $if(revised)$<dt>revised</dt><dd>$revised$$if(revurl)$ · <a href="$revurl$">source at this revision</a>$endif$</dd>$endif$
   </dl></div>
   $endif$
   $if(toc)$
