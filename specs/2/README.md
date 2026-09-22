@@ -469,7 +469,7 @@ That implementation runs this core under 3/ATTESTED-POOL, so its deposit circuit
 - The anonymity set is pool traffic, not a cohort: entry is open, so the set is every party that has ever deposited, and no registry enumerates it.
   A quiet pool still gives weak anonymity, whatever its membership.
 - A proof's commitment root reveals the tree state proved against, so clients SHOULD prove against the freshest windowed root.
-- Note ciphertexts are public forever under classical primitives, so a future quantum adversary decrypts the whole pool history (harvest now, decrypt later); post-quantum or hybrid note encryption is a deployment-profile option.
+- Note ciphertexts are public forever under classical primitives, so a future quantum adversary decrypts the whole pool history (harvest now, decrypt later); post-quantum or hybrid note encryption is a candidate revision.
 - Commitments and nullifiers carry no chain or deployment separation; domain tags are reserved for a future revision, and until then clients MUST NOT reuse keys across deployments.
 - The spending key is a raw field element with no signature capability, so hardware-module and threshold custody are nontrivial; signature-based note ownership is a candidate revision.
 - The nullifier set grows without bound; the nullifier-scaling extension bounds active state via epoch nullifiers.
