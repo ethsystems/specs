@@ -1,0 +1,13 @@
+# Hosts and URLs the weekly link check must skip.
+#
+# Calibrated on 2026-09-22 by fetching every external link in the repository
+# by hand. Only two needed an exception. Nothing else belongs here: a link
+# that is genuinely dead must fail the check, which is the point of it.
+
+# The local preview server in the README build instructions. Never reachable
+# from a runner, and not a published link.
+^http://127\.0\.0\.1:
+
+# Returns 403 to every non-browser client, including curl with a browser user
+# agent. The page is live and correct in a browser.
+^https://www\.fatf-gafi\.org/

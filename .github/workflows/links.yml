@@ -1,0 +1,65 @@
+# The specifications cite about forty external sources, and Appendix A of
+# 2/SHIELDED-POOL rests on citing each system's own primary source. A dead
+# citation in a published normative document is a real defect, so check them
+# on a schedule.
+#
+# Deliberately not a pull-request check. Blocking review on a third party's
+# uptime turns an unrelated outage into a blocked merge.
+name: Link check
+
+on:
+  schedule:
+    - cron: '30 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    # This file is mirrored to the public repo. The check belongs on the
+    # source of truth, and the issue it files belongs with the specifications.
+    if: github.repository == 'ethsystems/specs-private'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check external links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Never fail the job on link results. The issue below is the report.
+          fail: false
+          args: >-
+            --no-progress
+            --scheme https --scheme http
+            --max-concurrency 8
+            --max-retries 3 --retry-wait-time 10 --timeout 30
+            --accept 200..=206,429
+            --user-agent "Mozilla/5.0 (compatible; ethsystems-specs-linkcheck)"
+            README.md CONTRIBUTING.md template/README.md specs/*/README.md
+
+      - name: Report through a single issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh label create link-check --color D93F0B \
+            --description "Automated external link check" --force >/dev/null
+          open="$(gh issue list --state open --label link-check --json number --jq '.[0].number // empty')"
+          if [ "${{ steps.lychee.outputs.exit_code }}" -ne 0 ]; then
+            # One issue, rewritten each week, so a long outage is one thread.
+            if [ -n "$open" ]; then
+              gh issue edit "$open" --body-file lychee/out.md
+              echo "Updated #$open."
+            else
+              gh issue create --title "Link check: broken external links" \
+                --label link-check --body-file lychee/out.md
+            fi
+          elif [ -n "$open" ]; then
+            gh issue close "$open" --comment "Every link passes. Closed by the weekly link check."
+            echo "Closed #$open."
+          else
+            echo "Every link passes."
+          fi
