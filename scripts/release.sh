@@ -7,6 +7,10 @@
 #
 # Usage: scripts/release.sh [ref]    (default: origin/main, everything)
 #
+# Outside pull requests land on the public repo. Before releasing, rebase
+# private main onto the contributor's branch, so the push stays a
+# fast-forward and their commits keep their shas.
+#
 # To pause all releases, including the daily run:
 #   gh variable set SYNC_ENABLED --body false -R ethsystems/specs-private
 set -euo pipefail
