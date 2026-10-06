@@ -367,6 +367,7 @@ The proof attests, with `owner_pubkey == Poseidon1(spending_key)`:
 For a ballast input (the padded zero-value note), the circuit MUST still constrain the commitment's shape and the nullifier's derivation under the sender's own spending key, and MUST skip only the Merkle inclusion check.
 Leaving a ballast nullifier unconstrained lets a prover mark arbitrary values spent.
 Whether an input is ballast MUST be derived in-circuit from `amount == 0`; a free selector witness would let a prover skip membership for a nonzero note.
+Only the second input MAY be ballast: the first input MUST pass the Merkle inclusion check even when its amount is zero, so every transfer spends at least one note from the tree.
 A ballast input carries the sender's own key, the transaction's token, and a fresh random salt.
 
 **Withdraw statement.**
